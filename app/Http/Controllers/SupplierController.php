@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Supplier;
 
 class SupplierController extends Controller
 {
@@ -13,7 +14,7 @@ class SupplierController extends Controller
      */
     public function index()
     {
-        //
+        return view('supplier.index', ['suppliers'=> Supplier::get() ]);
     }
 
     /**
@@ -23,7 +24,7 @@ class SupplierController extends Controller
      */
     public function create()
     {
-        //
+        return view('supplier.create');
     }
 
     /**
@@ -34,7 +35,14 @@ class SupplierController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'kd_supp'=> 'required|max:100|unique:suppliers',
+            'nama'=> 'required|max:255',
+        ]);
+
+        Supplier::create($request->all());
+
+        return redirect()->route('supplier.index')->with('message', 'Successfull creating supplier !');
     }
 
     /**
@@ -56,7 +64,7 @@ class SupplierController extends Controller
      */
     public function edit($id)
     {
-        //
+        return view('supplier.edit', ['supplier' => Supplier::findOrFail($id)]);
     }
 
     /**
@@ -68,7 +76,14 @@ class SupplierController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $request->validate([
+            'kd_supp' => 'required|max:100|unique:suppliers,kd_supp,'.$id,
+            'nama'=> 'required|max:255',
+        ]);
+
+        Supplier::find($id)->update($request->all());
+
+        return redirect()->route('supplier.index')->with('success', 'Successfull Updating Supplier !');
     }
 
     /**
@@ -79,6 +94,12 @@ class SupplierController extends Controller
      */
     public function destroy($id)
     {
-        //
+        try {
+            Supplier::findOrFail($id)->delete();
+
+            return redirect()->route('supplier.index')->with('success', 'Successfull deleting supplier!');
+       } catch (\Throwable $th) {
+            return redirect()->route('supplier.index')->with('fail', 'Failed deleteing supplier !');
+       }
     }
 }

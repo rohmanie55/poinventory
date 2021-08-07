@@ -33,12 +33,12 @@ Master User
             <table id="table" class="display table table-striped table-hover" >
                 <thead>
                 <tr>
-                    <td>#</td>
-                    <td>Nama</td>
-                    <td>Username</td>
-                    <th>Email</th>
-                    <td>Role</td>
-                    <td style="width: 15%;">Option</td>
+                    <td style="width: 5%">#</td>
+                    <td style="width: 20%">Nama</td>
+                    <td style="width: 20%">Username</td>
+                    <th style="width: 20%">Email</th>
+                    <td >Role</td>
+                    <td>Option</td>
                 </tr>
                 </thead>
                 <tbody>
@@ -77,6 +77,13 @@ Master User
 <script >
     $(document).ready(function() {
         $('#table').DataTable({
+          scrollY:        true,
+          scrollX:        true,
+          scrollCollapse: true,
+          fixedColumns:   {
+            rightColumns: 1,
+            leftColumns: 0
+          }
         });
     });
 </script>

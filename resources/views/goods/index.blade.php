@@ -33,12 +33,12 @@ Master Barang
             <table id="table" class="display table table-striped table-hover" >
                 <thead>
                 <tr>
-                  <td>#</td>
-                  <td>Kode</td>
-                  <td>Nama Barang</td>
-                  <td>Harga</td>
-                  <td>Stok</td>
-                  <td>Satuan</td>
+                  <td style="width: 5%">#</td>
+                  <td style="width: 10%">Kode</td>
+                  <td style="width: 30%">Nama Barang</td>
+                  <td style="width: 15%">Harga</td>
+                  <td style="width: 10%">Stok</td>
+                  <td style="width: 20%">Satuan</td>
                   <td style="width: 15%;">Option</td>
                 </tr>
                 </thead>
@@ -79,6 +79,13 @@ Master Barang
 <script >
     $(document).ready(function() {
         $('#table').DataTable({
+          scrollY:        true,
+          scrollX:        true,
+          scrollCollapse: true,
+          fixedColumns:   {
+            rightColumns: 1,
+            leftColumns: 0
+          }
         });
     });
 </script>
