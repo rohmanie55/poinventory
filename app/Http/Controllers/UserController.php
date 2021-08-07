@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\User;
 
 class UserController extends Controller
 {
@@ -13,7 +14,7 @@ class UserController extends Controller
      */
     public function index()
     {
-        //
+        return view('user.index', ['users'=> User::get() ]);
     }
 
     /**
@@ -23,7 +24,7 @@ class UserController extends Controller
      */
     public function create()
     {
-        //
+        return view('user.create');
     }
 
     /**
@@ -34,7 +35,19 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'username' => 'required|max:100|unique:users',
+            'email' => 'required|max:200|unique:users',
+            'name' => 'required|max:255',
+            'password' => 'required',
+            'role' => 'required',
+        ]);
+        //hasing
+        $request['password'] = bcrypt($request->password);
+
+        User::create($request->except('token'));
+
+        return redirect()->route('user.index')->with('message', 'Success creating user!');
     }
 
     /**
@@ -56,7 +69,7 @@ class UserController extends Controller
      */
     public function edit($id)
     {
-        //
+        return view('user.edit', ['user' => User::findOrFail($id)]);
     }
 
     /**
@@ -68,7 +81,21 @@ class UserController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $request->validate([
+            'username' => 'required|max:100|unique:users,username,'.$id,
+            'email' => 'required|max:200|unique:users,email,'.$id,
+            'name' => 'required|max:255',
+            'role' => 'required',
+        ]);
+        //hasing
+        if($request->password)
+            $request['password'] = bcrypt($request->password);
+        else
+            unset($request['password']);
+
+        User::find($id)->update($request->all());
+
+        return redirect()->route('user.index')->with('success', 'Successfull update user!');
     }
 
     /**
@@ -79,6 +106,12 @@ class UserController extends Controller
      */
     public function destroy($id)
     {
-        //
+        try {
+            User::findOrFail($id)->delete();
+
+            return redirect()->route('user.index')->with('success', 'Successfull deleting user!');
+       } catch (\Throwable $th) {
+            return redirect()->route('user.index')->with('fail', 'Failed deleting user!');
+       }
     }
 }

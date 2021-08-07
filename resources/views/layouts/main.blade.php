@@ -61,25 +61,25 @@
           <!-- Nav items -->
           <ul class="navbar-nav">
             <li class="nav-item">
-              <a class="nav-link active" href="{{ route('dashboard') }}">
+              <a class="nav-link {{ Route::currentRouteName()=='dashboard' ? 'active' : ''}}" href="{{ route('dashboard') }}">
                 <i class="ni ni-app text-primary"></i>
                 <span class="nav-link-text">Dashboards</span>
               </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="{{ route('user.index') }}">
+                <a class="nav-link {{ in_array(Route::currentRouteName(), ['user.index','user.create','user.edit']) ? 'active' : ''}}" href="{{ route('user.index') }}">
                   <i class="ni ni-single-02 text-info"></i>
                   <span class="nav-link-text">Master User</span>
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="{{ route('user.index') }}">
+                <a class="nav-link {{ in_array(Route::currentRouteName(), ['goods.index','goods.create','goods.edit']) ? 'active' : ''}}" href="{{ route('goods.index') }}">
                   <i class="ni ni-box-2 text-orange"></i>
                   <span class="nav-link-text">Master Barang</span>
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="{{ route('user.index') }}">
+                <a class="nav-link {{ in_array(Route::currentRouteName(), ['supplier.index','supplier.create','supplier.edit']) ? 'active' : ''}}" href="{{ route('supplier.index') }}">
                   <i class="ni ni-delivery-fast text-success"></i>
                   <span class="nav-link-text">Master Supplier</span>
                 </a>
@@ -92,11 +92,9 @@
   <!-- Main content -->
   <div class="main-content" id="panel">
     <!-- Topnav -->
-    <nav class="navbar navbar-top navbar-expand navbar-dark bg-primary border-bottom">
+    <nav class="navbar navbar-top navbar-expand navbar-dark bg-default border-bottom">
       <div class="container-fluid">
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
-          <!-- Search form -->
-          <h3 class="text-white"> @yield('title')</h3>
           <!-- Navbar links -->
           <ul class="navbar-nav align-items-center  ml-md-auto ">
             <li class="nav-item d-xl-none">
@@ -175,10 +173,10 @@
                   <span>Settings</span>
                 </a>
                 <div class="dropdown-divider"></div>
-                <a href="#!" class="dropdown-item">
-                  <i class="ni ni-user-run"></i>
-                  <span>Logout</span>
-                </a>
+                <form method="POST" action="{{ route('logout') }}"  style="display: inline">
+                  @csrf
+                  <button class="dropdown-item" > <i class="ni ni-user-run"></i> Logout</button>
+                </form>
               </div>
             </li>
           </ul>
@@ -187,15 +185,33 @@
     </nav>
     <!-- Header -->
     <!-- Header -->
-    <div class="header bg-primary pb-6">
+    <div class="header bg-default pb-6">
       <div class="container-fluid">
+        @if(session()->has('success'))
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <span class="alert-icon"><i class="ni ni-check-bold"></i></span>
+            <span class="alert-text">{{ session()->get('success') }}</span>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        @endif
+        @if(session()->has('fail'))
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <span class="alert-icon"><i class="ni ni-fat-remove"></i></span>
+                <span class="alert-text"> {{ session()->get('fail') }}</span>
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        @endif
           @yield('header')
       </div>
     </div>
     <!-- Page content -->
     <div class="container-fluid mt--6">
       @yield('content')
-
+    
       <!-- Footer -->
       <footer class="footer pt-0">
         <div class="row align-items-center justify-content-lg-between">

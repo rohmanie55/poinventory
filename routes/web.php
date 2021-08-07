@@ -17,7 +17,7 @@ Route::group(['middleware' => 'auth'], function()
 {
     Route::get('/', function () { return view('dashboard');})->name('dashboard');
 
-    Route::resource('goods', 'BarangController');
+    Route::resource('goods', 'GoodsController');
     Route::resource('supplier', 'SupplierController');
     Route::resource('user', 'UserController');
     Route::resource('kanban', 'KanbanController');
