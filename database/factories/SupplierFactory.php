@@ -7,8 +7,8 @@ use Faker\Generator as Faker;
 
 $factory->define(Supplier::class, function (Faker $faker) {
     return [
-        'kd_supp'=> $faker->text($maxNbChars = 10),
-        'nm_supp'=> $faker->text($maxNbChars = 50),
+        'kd_supp'=> "S".$faker->unixTime,
+        'nama'=> $faker->company,
         'alamat' => $faker->address,
         'telpon' => $faker->e164PhoneNumber,
         'email' => $faker->email,
