@@ -15,6 +15,6 @@ class OrderDetail extends Model
 
     public function barang()
     {
-        return $this->hasOne('App\Models\Barang', 'id','barang_id');
+        return $this->hasOne('App\Models\Goods', 'id','barang_id');
     }
 }

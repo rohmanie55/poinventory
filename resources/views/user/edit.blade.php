@@ -31,7 +31,7 @@
             @method('PUT')
             @csrf
         <div class="card-body p-4 row justify-content-center bg-secondary">
-            <div class="col-8">
+            <div class="col-12">
             <div class="form-group @error('name') has-error has-feedback @enderror">
                 <label>Nama</label>
                 <input name="name" value="{{ old('name') ?? $user->name }}" type="text" class="form-control form-control-alternative" placeholder="Nama">

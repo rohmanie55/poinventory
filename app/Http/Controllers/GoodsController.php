@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Goods;
 
 class GoodsController extends Controller
 {
@@ -13,7 +14,7 @@ class GoodsController extends Controller
      */
     public function index()
     {
-        //
+        return view('goods.index', ['goods'=> Goods::latest()->get() ]);
     }
 
     /**
@@ -23,7 +24,7 @@ class GoodsController extends Controller
      */
     public function create()
     {
-        //
+        return view('goods.create');
     }
 
     /**
@@ -34,7 +35,16 @@ class GoodsController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'kd_brg'=> 'required|max:100|unique:goods',
+            'nm_brg'=> 'required|max:255',
+            'harga' => 'required|numeric',
+            'stock' => 'required|numeric',
+        ]);
+
+        Goods::create($request->all());
+
+        return redirect()->route('goods.index')->with('message', 'Successfull creating goods!');
     }
 
     /**
@@ -56,7 +66,7 @@ class GoodsController extends Controller
      */
     public function edit($id)
     {
-        //
+        return view('goods.edit', ['goods' => Goods::findOrFail($id)]);
     }
 
     /**
@@ -68,7 +78,16 @@ class GoodsController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $request->validate([
+            'kd_brg' => 'required|max:100|unique:goods,kd_brg,'.$id,
+            'nm_brg' => 'required|max:255',
+            'harga' => 'required|numeric',
+            'stock' => 'required|numeric',
+        ]);
+
+        Goods::find($id)->update($request->all());
+
+        return redirect()->route('goods.index')->with('success', 'Successfull updating goods!');
     }
 
     /**
@@ -79,6 +98,12 @@ class GoodsController extends Controller
      */
     public function destroy($id)
     {
-        //
+        try {
+            Goods::findOrFail($id)->delete();
+
+            return redirect()->route('goods.index')->with('success', 'Successfull deleting goods !');
+       } catch (\Throwable $th) {
+            return redirect()->route('goods.index')->with('fail', 'Failed deleting goods !');
+       }
     }
 }

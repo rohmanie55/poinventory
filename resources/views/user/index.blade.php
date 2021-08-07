@@ -1,7 +1,7 @@
 @extends('layouts.main')
 
 @section('title')
-Dashboard
+Master User
 @endsection
 
 @section('header')
