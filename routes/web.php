@@ -15,8 +15,6 @@ Auth::routes(['register' => false, 'reset' => false]);
 
 Route::group(['middleware' => 'auth'], function()
 {
-    Route::get('/', function () { return view('dashboard');})->name('dashboard');
-
     Route::get('notifications', function(){ 
         return view('notification'); 
     })->name('notification.index');
@@ -32,6 +30,8 @@ Route::group(['middleware' => 'auth'], function()
 
         return redirect()->route('notification.index');
     })->name('notification.delete');
+
+    Route::get('/', 'DashboardController')->name('dashboard');
 
     Route::post('order/{order}/approve', 'OrderController@approve')->name('order.approve');
 
