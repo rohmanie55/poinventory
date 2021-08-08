@@ -15,11 +15,12 @@ class CreateKanbanDetailTable extends Migration
     {
         Schema::create('kanban_details', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->unsignedBigInteger('request_id');
+            $table->unsignedBigInteger('kanban_id');
             $table->unsignedBigInteger('barang_id');
             $table->integer('qty_request');
-            $table->foreign('request_id')->references('id')->on('requests')->onDelete('cascade');
-            $table->foreign('barang_id')->references('id')->on('barangs')->onDelete('restrict');
+            $table->string('status', 50);
+            $table->foreign('kanban_id')->references('id')->on('kanbans')->onDelete('cascade');
+            $table->foreign('barang_id')->references('id')->on('goods')->onDelete('restrict');
             $table->timestamps();
         });
     }

@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Database\Seeder;
-use App\Models\Barang;
+use App\Models\Goods;
 use Illuminate\Support\Facades\DB;
 
 class CreateBarangSeed extends Seeder
@@ -13,6 +13,6 @@ class CreateBarangSeed extends Seeder
      */
     public function run()
     {
-        factory(Barang::class, 20)->create();
+        factory(Goods::class, 20)->create();
     }
 }

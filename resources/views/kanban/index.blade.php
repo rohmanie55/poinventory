@@ -37,9 +37,9 @@ Kanban
                   <th style="width: 15%;">No Request</th>
                   <th style="width: 20%;">Tgl Request</th>
                   <th style="width: 20%;">Tgl Butuh</th>
-                  <th style="width: 30%;">User Request</th>
+                  <th style="width: 25%;">User Request</th>
                   <th style="width: 30%;">Tujuan</th>
-                  <th style="width: 15%;">Option</th>
+                  <th style="width: 20%;">Option</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -76,7 +76,7 @@ Kanban
   </div>
 
   <div class="modal fade" id="modal-detail" tabindex="-1" role="dialog" aria-labelledby="modal-detail" aria-hidden="true">
-    <div class="modal-dialog modal- modal-dialog-centered modal-" role="document">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h6 class="modal-title" id="modal-title-default">Detail Kanban</h6>
@@ -111,11 +111,11 @@ Kanban
 
         $('.btn-detail').click(function(){
           $("#content-detail").empty()
-          let content = `<tr><td>No</td><td>Nama Barang</td><td>Jumlah</td></tr>`
+          let content = `<tr><td>No</td><td>Nama Barang</td><td>Jumlah</td><td>Status</td></tr>`
           let details = JSON.parse($(this).attr("data-param"))
 
           details.forEach((data, num)=>{
-            content+=`<tr><td>${num+1}</td><td>${data.barang.kd_brg+' - '+data.barang.nm_brg}</td><td>${data.qty_request} ${data.barang.unit}</td></tr>`;
+            content+=`<tr><td>${num+1}</td><td>${data.barang.kd_brg+' - '+data.barang.nm_brg}</td><td>${data.qty_request} ${data.barang.unit}</td><td><span>${data.status}</span></td></tr>`;
           });
 
           $("#content-detail").append(`<table class="table table-striped">${content}</table>`)

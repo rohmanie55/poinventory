@@ -15,6 +15,6 @@ class Kanban extends Model
 
     public function details()
     {
-        return $this->hasMany('App\Models\KanbanDetail', 'request_id');
+        return $this->hasMany('App\Models\KanbanDetail', 'kanban_id');
     }
 }

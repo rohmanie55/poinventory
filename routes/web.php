@@ -16,6 +16,7 @@ Auth::routes(['register' => false, 'reset' => false]);
 Route::group(['middleware' => 'auth'], function()
 {
     Route::get('/', function () { return view('dashboard');})->name('dashboard');
+    Route::post('order/{order}/approve', 'OrderController@approve')->name('order.approve');
 
     Route::resource('goods', 'GoodsController');
     Route::resource('supplier', 'SupplierController');

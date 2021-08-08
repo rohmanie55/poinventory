@@ -21,7 +21,7 @@ class CreateOrderDetailTable extends Migration
             $table->integer('qty_order');
             $table->double('subtotal');
             $table->foreign('order_id')->references('id')->on('orders')->onDelete('cascade');
-            $table->foreign('barang_id')->references('id')->on('barangs')->onDelete('restrict');
+            $table->foreign('barang_id')->references('id')->on('goods')->onDelete('restrict');
             $table->foreign('kanban_det_id')->references('id')->on('kanban_details')->onDelete('restrict');
             $table->timestamps();
         });

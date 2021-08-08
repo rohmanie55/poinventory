@@ -3,6 +3,16 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Notifications\KanbanStatus;
+use Illuminate\Support\Facades\Notification;
+use App\Models\Order;
+use App\Models\Kanban;
+use App\Models\OrderDetail;
+use App\Models\KanbanDetail;
+use App\Models\Goods;
+use App\Models\Supplier;
+use App\User;
+use DB;
 
 class OrderController extends Controller
 {
@@ -13,7 +23,9 @@ class OrderController extends Controller
      */
     public function index()
     {
-        //
+        return view('order.index', [
+            'orders'=> Order::with('details.barang:id,kd_brg,nm_brg,unit', 'request:id,no_request,tgl_request,tujuan','supplier', 'approve:id,name')->get()
+        ]);
     }
 
     /**
@@ -23,7 +35,27 @@ class OrderController extends Controller
      */
     public function create()
     {
-        //
+        if(isset($_GET['notif_id']) && isset($_GET['kanban_id'])){
+            auth()->user()->unreadNotifications()->where('id', $_GET['notif_id'])->update(['read_at' => now()]);
+        }
+
+        $kanbans = Kanban::with(['user:id,name', 'details'=> function ($query) {
+            $query->selectRaw('kanban_details.id,kanban_id,kanban_details.barang_id,qty_request, qty_request - COALESCE(SUM(qty_order), 0) as qty_sisa, goods.id b_id, kd_brg, nm_brg,harga')
+            ->leftJoin('order_details', 'kanban_details.id', '=', 'order_details.kanban_det_id')
+            ->leftJoin('goods', 'goods.id', '=', 'kanban_details.barang_id')
+            ->groupBy('kanban_details.id');
+        }])->get()->transform(function ($item, $key) {
+            $item->detaile = $item->details->where('qty_sisa', '>', 0);
+            $item->detaile = $item->detaile->count()>0 ? $item->detaile : null;
+            unset($item->details);
+            return $item;
+        });
+
+        return view('order.create', [
+            'suppliers'=> Supplier::select('id', 'kd_supp', 'nama')->get(),
+            'kanbans'  => $kanbans,
+            'kanban_id'=> $_GET['kanban_id'] ?? null
+        ]);
     }
 
     /**
@@ -34,7 +66,77 @@ class OrderController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'tgl_order'  => 'required',
+            'supplier_id' => 'required',
+            'kanban_id' => 'required'
+        ]);
+
+        DB::transaction(function () use ($request){
+
+            $last = Order::selectRaw('MAX(no_order) as number')->first();
+            $no_order= "O".sprintf("%05s", substr($last->number, 1, 5)+1);
+            $requestor = Kanban::select('id','user_id')->find($request->kanban_id);
+            $details = [];
+            $detail_id = [];
+
+            $po = Order::create([
+                'no_order' => $no_order,
+                'tgl_order'=> $request->tgl_order,
+                'total'    => $request->total,
+                'suplier_id'=> $request->supplier_id,
+                'kanban_id'=> $request->kanban_id,
+            ]);
+
+            foreach($request->barang_id as $idx=>$barang_id){
+                if($request->qty_order[$idx]>0){
+                    $details[] = [
+                        'order_id' =>$po->id,
+                        'barang_id'=>$barang_id,
+                        'kanban_det_id'=>$request->detail_id[$idx],
+                        'qty_order'=>$request->qty_order[$idx],
+                        'subtotal' =>$request->subtotal[$idx]
+                    ];
+
+                    $detail_id[] = $request->detail_id[$idx];
+                }
+            }
+
+            OrderDetail::insert($details);
+
+            KanbanDetail::whereIn('id', $detail_id)->update(['status'=>'ordered']);
+
+            //push notification to produksi
+            Notification::send(User::find($requestor->user_id), new KanbanStatus([
+                "title" => "Kanban request ordered",
+                "body"  => "Purchase order has assigned with number $po->no_order!",
+                "order_id"=> $po->id
+            ]));
+            //push notification to manager
+            Notification::send(User::where('role', 'manager')->get(), new KanbanStatus([
+                "title" => "New purchase ordered",
+                "body"  => "Please approve order with number $po->no_order!",
+                "order_id"=> $po->id
+            ]));
+        });
+
+        return redirect()->route('order.index')->with('message', 'Successfull creating order!');
+    }
+
+        /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function approve($id)
+    {
+        Order::findOrFail($id)->update([
+            'approve_at' => now()->toDateTimeString(),
+            'approve_id' => auth()->user()->id,
+        ]);
+
+        return redirect()->route('order.index')->with('message', 'Successfull approving order !');
     }
 
     /**
@@ -56,7 +158,23 @@ class OrderController extends Controller
      */
     public function edit($id)
     {
-        //
+        $kanbans = Kanban::with(['user:id,name', 'details'=> function ($query) {
+            $query->selectRaw('kanban_details.id,kanban_id,kanban_details.barang_id,qty_request, qty_request - COALESCE(SUM(qty_order), 0) as qty_sisa, goods.id b_id, kd_brg, nm_brg,harga')
+            ->leftJoin('order_details', 'kanban_details.id', '=', 'order_details.kanban_det_id')
+            ->leftJoin('goods', 'goods.id', '=', 'kanban_details.barang_id')
+            ->groupBy('kanban_details.id');
+        }])->get()->transform(function ($item, $key) {
+            $item->detaile = $item->details->where('qty_sisa', '>', 0);
+            $item->detaile = $item->detaile->count()>0 ? $item->detaile : null;
+            unset($item->details);
+            return $item;
+        });
+
+        return view('order.edit', [
+            'order'    => Order::with('details')->find($id),
+            'suppliers'=> Supplier::select('id', 'kd_supp', 'nama')->get(),
+            'kanbans' => $kanbans,
+        ]);
     }
 
     /**
@@ -68,7 +186,44 @@ class OrderController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        DB::transaction(function () use ($request, $id){
+
+            $details = [];
+            $detail_id = [];
+
+            Order::find($id)->update([
+                'tgl_order'=> $request->tgl_order,
+                'total'    => $request->total,
+                'suplier_id'=> $request->supplier_id,
+                'kanban_id'=> $request->kanban_id,
+            ]);
+
+            //update kanban status and remove old data
+            $order_detail =OrderDetail::where('order_id', $id);
+            $old_order    =$order_detail->get()->pluck('kanban_det_id');
+            KanbanDetail::whereIn('id', $old_order)->update(['status'=>'requested']);
+            $order_detail->delete();
+
+            foreach($request->barang_id as $idx=>$barang_id){
+                if($request->qty_order[$idx]>0){
+                    $details[] = [
+                        'order_id' =>$id,
+                        'barang_id'=>$barang_id,
+                        'kanban_det_id'=>$request->detail_id[$idx],
+                        'qty_order'=>$request->qty_order[$idx],
+                        'subtotal' =>$request->subtotal[$idx]
+                    ];
+
+                    $detail_id[] = $request->detail_id[$idx];
+                }
+            }
+
+            OrderDetail::insert($details);
+
+            KanbanDetail::whereIn('id', $detail_id)->update(['status'=>'ordered']);
+        });
+
+        return redirect()->route('order.index')->with('message', 'Successfull updating order!');
     }
 
     /**
@@ -79,6 +234,14 @@ class OrderController extends Controller
      */
     public function destroy($id)
     {
-        //
+        try {
+            Order::findOrFail($id)->delete();
+
+            OrderDetail::where('order_id', $id)->delete();
+
+            return redirect()->route('order.index')->with('success', 'Successfull deleting order !');
+       } catch (\Throwable $th) {
+            return redirect()->route('order.index')->with('fail', 'Failed deleteing order!');
+       }
     }
 }

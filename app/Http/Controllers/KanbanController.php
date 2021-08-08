@@ -3,9 +3,12 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Notifications\KanbanStatus;
+use Illuminate\Support\Facades\Notification;
 use App\Models\Kanban;
 use App\Models\Goods;
 use App\Models\KanbanDetail;
+use App\User;
 use DB;
 
 class KanbanController extends Controller
@@ -46,9 +49,8 @@ class KanbanController extends Controller
             'tgl_request'=> 'required',
             'tgl_butuh'  => 'nullable|after:tgl_request',
         ]);
-
+            
         DB::transaction(function () use ($request){
-
             $last = Kanban::selectRaw('MAX(no_request) as number')->first();
             $no_request= "K".sprintf("%05s", substr($last->number, 1, 5)+1);
             $details = [];
@@ -62,11 +64,20 @@ class KanbanController extends Controller
             ]);
 
             foreach($request->barang_id as $idx=>$barang_id){
-                $details[] = ['barang_id'=>$barang_id, 'qty_request'=> $request->qty_request[$idx], 'request_id'=>$kanban->id];
+                $details[] = ['barang_id'=>$barang_id, 'qty_request'=> $request->qty_request[$idx], 'kanban_id'=>$kanban->id, 'status'=>'requested'];
             }
 
             KanbanDetail::insert($details);
+
+            //push notification to user purchasing
+            Notification::send(User::where('role', 'purchasing')->get(), new KanbanStatus([
+                "title" => "New kanban request",
+                "body"  => "Please create purchase order for  $kanban->no_request!",
+                "kanban_id"=> $kanban->id
+            ]));
         });
+
+
 
         return redirect()->route('kanban.index')->with('message', 'Successfull creating kanban!');
     }
@@ -152,7 +163,7 @@ class KanbanController extends Controller
         try {
             Kanban::findOrFail($id)->delete();
 
-            KanbanDetail::where('request_id', $id)->delete();
+            KanbanDetail::where('kanban_id', $id)->delete();
 
             return redirect()->route('kanban.index')->with('success', 'Successfull deleting kanban!');
        } catch (\Throwable $th) {

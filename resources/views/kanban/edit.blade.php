@@ -23,7 +23,7 @@
 
 @section('content')
 <div class="row justify-content-center">
-    <div class="col-8 card ">
+    <div class="col-12 col-lg-8 card ">
         <div class="card-header">
             <h4 class="card-title">Edit Kanban</h4>
         </div>

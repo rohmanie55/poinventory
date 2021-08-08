@@ -2,10 +2,10 @@
 
 /** @var \Illuminate\Database\Eloquent\Factory $factory */
 
-use App\Models\Barang;
+use App\Models\Goods;
 use Faker\Generator as Faker;
 
-$factory->define(Barang::class, function (Faker $faker) {
+$factory->define(Goods::class, function (Faker $faker) {
     return [
         'kd_brg'=> "B".$faker->unixTime,
         'nm_brg'=> $faker->text($maxNbChars = 30),

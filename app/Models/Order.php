@@ -15,7 +15,7 @@ class Order extends Model
 
     public function request()
     {
-        return $this->hasOne('App\Models\PKanban', 'id','request_id');
+        return $this->hasOne('App\Models\Kanban', 'id','kanban_id');
     }
 
     public function supplier()

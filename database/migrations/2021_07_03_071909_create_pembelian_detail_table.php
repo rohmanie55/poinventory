@@ -21,7 +21,7 @@ class CreatePembelianDetailTable extends Migration
             $table->integer('qty_brg');
             $table->double('subtotal');
             $table->foreign('beli_id')->references('id')->on('pembelians')->onDelete('cascade');
-            $table->foreign('barang_id')->references('id')->on('barangs')->onDelete('restrict');
+            $table->foreign('barang_id')->references('id')->on('goods')->onDelete('restrict');
             $table->foreign('order_det_id')->references('id')->on('order_details')->onDelete('restrict');
             $table->timestamps();
         });
