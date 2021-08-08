@@ -34,7 +34,7 @@
             <div class="col-12">
                 <div class="form-group @error('kd_supp') has-error has-feedback @enderror">
                     <label>Kode Supplier</label>
-                    <input name="kd_supp" value="{{ old('kd_supp') ?? $supplier->kd_supp }}" type="text" class="form-control" placeholder="Kode Supplier">
+                    <input name="kd_supp" value="{{ old('kd_supp') ?? $supplier->kd_supp }}" type="text" class="form-control form-control-alternative" placeholder="Kode Supplier">
                     @error('kd_supp') 
                     <small class="form-text text-danger">
                         <strong>{{ $message }}</strong>
@@ -43,7 +43,7 @@
                 </div>
                 <div class="form-group @error('nama') has-error has-feedback @enderror">
                     <label>Nama</label>
-                    <input name="nama" value="{{ old('nama') ?? $supplier->nama }}" type="text" class="form-control" placeholder="Nama">
+                    <input name="nama" value="{{ old('nama') ?? $supplier->nama }}" type="text" class="form-control form-control-alternative" placeholder="Nama">
                     @error('nama') 
                     <small class="form-text text-danger">
                         <strong>{{ $message }}</strong>
@@ -52,7 +52,7 @@
                 </div>
                 <div class="form-group @error('telpon') has-error has-feedback @enderror">
                     <label>Telpon</label>
-                    <input name="telpon" value="{{ old('telpon') ?? $supplier->telpon }}" type="text" class="form-control" placeholder="Telpon">
+                    <input name="telpon" value="{{ old('telpon') ?? $supplier->telpon }}" type="text" class="form-control form-control-alternative" placeholder="Telpon">
                     @error('telpon') 
                     <small class="form-text text-danger">
                         <strong>{{ $message }}</strong>
@@ -61,7 +61,7 @@
                 </div>
                 <div class="form-group @error('email') has-error has-feedback @enderror">
                     <label>Telpon</label>
-                    <input name="email" value="{{ old('email') ?? $supplier->email }}" type="email" class="form-control" placeholder="Email">
+                    <input name="email" value="{{ old('email') ?? $supplier->email }}" type="email" class="form-control form-control-alternative" placeholder="Email">
                     @error('email') 
                     <small class="form-text text-danger">
                         <strong>{{ $message }}</strong>
@@ -70,7 +70,7 @@
                 </div>
                 <div class="form-group @error('alamat') has-error has-feedback @enderror">
                     <label>Alamat</label>
-                    <input name="alamat" value="{{ old('alamat') ?? $supplier->alamat }}" type="text" class="form-control" placeholder="Alamat">
+                    <input name="alamat" value="{{ old('alamat') ?? $supplier->alamat }}" type="text" class="form-control form-control-alternative" placeholder="Alamat">
                     @error('alamat') 
                     <small class="form-text text-danger">
                         <strong>{{ $message }}</strong>

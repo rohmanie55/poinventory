@@ -34,7 +34,7 @@
             <div class="col-12">
                 <div class="form-group @error('kd_brg') has-error has-feedback @enderror">
                     <label>Kode Barang</label>
-                    <input name="kd_brg" value="{{ old('kd_brg') ?? $goods->kd_brg }}" type="text" class="form-control" placeholder="Kode Barang">
+                    <input name="kd_brg" value="{{ old('kd_brg') ?? $goods->kd_brg }}" type="text" class="form-control form-control-alternative" placeholder="Kode Barang">
                     @error('kd_brg') 
                     <small class="form-text text-danger">
                         <strong>{{ $message }}</strong>
@@ -43,7 +43,7 @@
                 </div>
                 <div class="form-group @error('nm_brg') has-error has-feedback @enderror">
                     <label>Nama</label>
-                    <input name="nm_brg" value="{{ old('nm_brg') ?? $goods->nm_brg }}" type="text" class="form-control" placeholder="Nama">
+                    <input name="nm_brg" value="{{ old('nm_brg') ?? $goods->nm_brg }}" type="text" class="form-control form-control-alternative" placeholder="Nama">
                     @error('nm_brg') 
                     <small class="form-text text-danger">
                         <strong>{{ $message }}</strong>
@@ -52,7 +52,7 @@
                 </div>
                 <div class="form-group @error('unit') has-error has-feedback @enderror">
                     <label>Unit</label>
-                    <input name="unit" value="{{ old('unit') ?? $goods->unit }}" type="text" class="form-control" placeholder="Unit (PCS, SET)">
+                    <input name="unit" value="{{ old('unit') ?? $goods->unit }}" type="text" class="form-control form-control-alternative" placeholder="Unit (PCS, SET)">
                     @error('unit') 
                     <small class="form-text text-danger">
                         <strong>{{ $message }}</strong>
@@ -61,7 +61,7 @@
                 </div>
                 <div class="form-group @error('harga') has-error has-feedback @enderror">
                     <label>Harga</label>
-                    <input name="harga" value="{{ old('harga') ?? $goods->harga }}" type="text" class="form-control" placeholder="Harga">
+                    <input name="harga" value="{{ old('harga') ?? $goods->harga }}" type="text" class="form-control form-control-alternative" placeholder="Harga">
                     @error('harga') 
                     <small class="form-text text-danger">
                         <strong>{{ $message }}</strong>
@@ -69,8 +69,8 @@
                     @enderror
                 </div>
                 <div class="form-group @error('stock') has-error has-feedback @enderror">
-                    <label>Stock</label>
-                    <input name="stock" value="{{ old('stock') ?? $goods->stock }}" type="number" class="form-control" placeholder="Stock">
+                    <label>Stock Awal</label>
+                    <input name="stock" value="{{ old('stock') ?? $goods->stock }}" type="number" class="form-control form-control-alternative" placeholder="Stock">
                     @error('stock') 
                     <small class="form-text text-danger">
                         <strong>{{ $message }}</strong>
@@ -90,13 +90,4 @@
         </form>
     </div>
 </div>
-@endsection
-
-@section('script')
-<script >
-    $(document).ready(function() {
-        $('#table').DataTable({
-        });
-    });
-</script>
 @endsection

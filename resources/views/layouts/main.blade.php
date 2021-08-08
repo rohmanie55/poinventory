@@ -34,6 +34,7 @@
   <!-- Argon CSS -->
   <link rel="stylesheet" href="https://cdn.datatables.net/1.10.25/css/dataTables.bootstrap4.min.css">
   <link rel="stylesheet" href="https://datatables.net/release-datatables/extensions/FixedColumns/css/fixedColumns.bootstrap4.css">
+  <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
   <link rel="stylesheet" href="{{ asset('css/dashboard.css') }}" type="text/css">
 
 </head>
@@ -64,7 +65,7 @@
             <li class="nav-item">
               <a class="nav-link {{ Route::currentRouteName()=='dashboard' ? 'active' : ''}}" href="{{ route('dashboard') }}">
                 <i class="ni ni-app text-primary"></i>
-                <span class="nav-link-text">Dashboards</span>
+                <span class="nav-link-text">Dashboard</span>
               </a>
             </li>
             <li class="nav-item">
@@ -84,6 +85,46 @@
                   <i class="ni ni-delivery-fast text-success"></i>
                   <span class="nav-link-text">Master Supplier</span>
                 </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link {{ in_array(Route::currentRouteName(), ['kanban.index','kanban.create','kanban.edit']) ? 'active' : ''}}" href="{{ route('kanban.index') }}">
+                <i class="ni ni-send text-danger"></i>
+                <span class="nav-link-text">Kanban</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link {{ in_array(Route::currentRouteName(), ['order.index','order.create','order.edit']) ? 'active' : ''}}" href="{{ route('order.index') }}">
+                <i class="ni ni-bag-17 text-blue"></i>
+                <span class="nav-link-text">Order</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link {{ in_array(Route::currentRouteName(), ['purchase.index','purchase.create','purchase.edit']) ? 'active' : ''}}" href="{{ route('purchase.index') }}">
+                <i class="ni ni-money-coins text-default"></i>
+                <span class="nav-link-text">Pembelian</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link {{ in_array(Route::currentRouteName(), ['transaction.index','transaction.create','transaction.edit']) ? 'active' : ''}}" href="{{ route('transaction.index') }}">
+                <i class="ni ni-archive-2 text-info"></i>
+                <span class="nav-link-text">Penerimaan</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#navbar-tables" data-toggle="collapse" role="button" aria-expanded="false" aria-controls="navbar-tables">
+                <i class="ni ni-chart-bar-32 text-danger"></i>
+                <span class="nav-link-text">Laporan</span>
+              </a>
+              <div class="collapse" id="navbar-tables">
+                <ul class="nav nav-sm flex-column">
+                  <li class="nav-item">
+                    <a href="" class="nav-link">
+                      <span class="sidenav-mini-icon"><i class="ni ni-archive-2 text-default"></i></span>
+                      <span class="sidenav-normal"> Stock Barang </span>
+                    </a>
+                  </li>
+                </ul>
+              </div>
             </li>
           </ul>
         </div>
@@ -254,7 +295,16 @@
   <script src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
   <script src="https://cdn.datatables.net/1.10.25/js/dataTables.bootstrap4.min.js"></script>
   <script src="https://datatables.net/release-datatables/extensions/FixedColumns/js/dataTables.fixedColumns.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
   <script src="{{ asset('js/dashboard.js') }}"></script>
+  <script>
+    function convertToRupiah(angka){
+      var rupiah = '';		
+      var angkarev = angka.toString().split('').reverse().join('');
+      for(var i = 0; i < angkarev.length; i++) if(i%3 == 0) rupiah += angkarev.substr(i,3)+'.';
+      return 'Rp. '+rupiah.split('',rupiah.length-1).reverse().join('');
+    }
+</script>
   @yield('script')
 </body>
 

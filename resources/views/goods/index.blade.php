@@ -37,7 +37,7 @@ Master Barang
                   <td style="width: 10%">Kode</td>
                   <td style="width: 30%">Nama Barang</td>
                   <td style="width: 15%">Harga</td>
-                  <td style="width: 10%">Stok</td>
+                  <td style="width: 10%">Stok Awal</td>
                   <td style="width: 20%">Satuan</td>
                   <td style="width: 15%;">Option</td>
                 </tr>
