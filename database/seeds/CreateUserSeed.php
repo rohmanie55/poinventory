@@ -17,6 +17,8 @@ class CreateUserSeed extends Seeder
         // User::truncate();
         // DB::statement('SET FOREIGN_KEY_CHECKS=1;');
 
+        factory(User::class, 1)->create(["username"=>"admin01","role"=>"purchasing"]);
+
         factory(User::class, 10)->create();
     }
 }
