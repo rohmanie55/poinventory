@@ -167,14 +167,11 @@
                 <!-- List group -->
                 <div class="list-group list-group-flush">
                   @foreach (auth()->user()->unreadNotifications as $notif)
-                  <a href="{{ 
-                  array_key_exists('kanban_id', $notif->data)
-                  ? route('order.create', ['notif_id'=>$notif->id,'kanban_id'=>$notif->data['kanban_id']])
-                  : "#" }}" class="list-group-item list-group-item-action">
+                  <a href="{{ array_key_exists('url', $notif->data) ? $notif->data['url'] : "#" }}" class="list-group-item list-group-item-action">
                     <div class="row align-items-center">
                       <div class="col-auto">
                         <!-- Avatar -->
-                        <div class="avatar rounded-circle bg-warning">N</div>
+                        <div class="avatar rounded-circle bg-warning">{{ substr($notif->data['title'], 0, 1)}}</div>
                       </div>
                       <div class="col ml--2">
                         <div class="d-flex justify-content-between align-items-center">
@@ -192,7 +189,7 @@
                   @endforeach
                 </div>
                 <!-- View all -->
-                <a href="#!" class="dropdown-item text-center text-primary font-weight-bold py-3">View all</a>
+                <a href="{{ route('notification.index') }}" class="dropdown-item text-center text-primary font-weight-bold py-3">View all</a>
               </div>
             </li>
           </ul>

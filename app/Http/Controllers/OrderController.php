@@ -35,8 +35,8 @@ class OrderController extends Controller
      */
     public function create()
     {
-        if(isset($_GET['notif_id']) && isset($_GET['kanban_id'])){
-            auth()->user()->unreadNotifications()->where('id', $_GET['notif_id'])->update(['read_at' => now()]);
+        if(isset($_GET['kanban_id'])){
+            auth()->user()->notifications()->where('data->kanban_id', $_GET['kanban_id'])->update(['read_at' => now()]);
         }
 
         $kanbans = Kanban::with(['user:id,name', 'details'=> function ($query) {
@@ -81,11 +81,12 @@ class OrderController extends Controller
             $detail_id = [];
 
             $po = Order::create([
-                'no_order' => $no_order,
-                'tgl_order'=> $request->tgl_order,
-                'total'    => $request->total,
+                'no_order'  => $no_order,
+                'tgl_order' => $request->tgl_order,
+                'total'     => $request->total,
                 'suplier_id'=> $request->supplier_id,
-                'kanban_id'=> $request->kanban_id,
+                'kanban_id' => $request->kanban_id,
+                'user_id'   => auth()->user()->id,
             ]);
 
             foreach($request->barang_id as $idx=>$barang_id){
@@ -112,6 +113,7 @@ class OrderController extends Controller
                 "body"  => "Purchase order has assigned with number $po->no_order!",
                 "order_id"=> $po->id
             ]));
+
             //push notification to manager
             Notification::send(User::where('role', 'manager')->get(), new KanbanStatus([
                 "title" => "New purchase ordered",
@@ -131,10 +133,26 @@ class OrderController extends Controller
      */
     public function approve($id)
     {
-        Order::findOrFail($id)->update([
+        $order = Order::findOrFail($id);
+        
+        $order->update([
             'approve_at' => now()->toDateTimeString(),
             'approve_id' => auth()->user()->id,
         ]);
+
+        //push notification to purchasing
+        Notification::send(User::find($order->user_id), new KanbanStatus([
+            "title"   => "Purchase ordered has approved!",
+            "body"    => "Order number $order->no_order has approved by ".auth()->user()->name,
+            "order_id"=> $order->id
+        ]));
+
+        //push notification to finance
+        Notification::send(User::where('role', 'finance')->get(), new KanbanStatus([
+            "title"   => "New ordered need to process!",
+            "body"    => "Please process order number $order->no_order",
+            "order_id"=> $order->id
+        ]));
 
         return redirect()->route('order.index')->with('message', 'Successfull approving order !');
     }

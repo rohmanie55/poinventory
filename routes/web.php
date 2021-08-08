@@ -16,6 +16,23 @@ Auth::routes(['register' => false, 'reset' => false]);
 Route::group(['middleware' => 'auth'], function()
 {
     Route::get('/', function () { return view('dashboard');})->name('dashboard');
+
+    Route::get('notifications', function(){ 
+        return view('notification'); 
+    })->name('notification.index');
+
+    Route::post('notifications/{notification}', function($id){
+        auth()->user()->notifications()->where('id', $id)->update(['read_at' => now()]);
+
+        return redirect()->route('notification.index');
+    })->name('notification.read');
+
+    Route::delete('notifications/{notification}', function($id){
+        auth()->user()->notifications()->where('id', $id)->delete();
+
+        return redirect()->route('notification.index');
+    })->name('notification.delete');
+
     Route::post('order/{order}/approve', 'OrderController@approve')->name('order.approve');
 
     Route::resource('goods', 'GoodsController');

@@ -72,7 +72,8 @@ class KanbanController extends Controller
             //push notification to user purchasing
             Notification::send(User::where('role', 'purchasing')->get(), new KanbanStatus([
                 "title" => "New kanban request",
-                "body"  => "Please create purchase order for  $kanban->no_request!",
+                "body"  => "Please create purchase order for $kanban->no_request!",
+                "url"   => route('order.create', ['kanban_id'=>$kanban->id]),
                 "kanban_id"=> $kanban->id
             ]));
         });
