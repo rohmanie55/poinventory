@@ -13,12 +13,15 @@ class CreateUserSeed extends Seeder
      */
     public function run()
     {
-        // DB::statement('SET FOREIGN_KEY_CHECKS=0;');
-        // User::truncate();
-        // DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+        User::create([
+            "name" => "Admin",
+            "username"=> "admin",
+            "email"=> "admin@test.com",
+            "password"=> bcrypt("password"),
+            "role"=> "purchasing",
+        ]);
+        //factory(User::class, 1)->create(["username"=>"admin01","role"=>"purchasing"]);
 
-        factory(User::class, 1)->create(["username"=>"admin01","role"=>"purchasing"]);
-
-        factory(User::class, 10)->create();
+        //factory(User::class, 10)->create();
     }
 }
