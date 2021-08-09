@@ -17,4 +17,9 @@ class Kanban extends Model
     {
         return $this->hasMany('App\Models\KanbanDetail', 'kanban_id');
     }
+
+    public function order()
+    {
+        return $this->hasMany('App\Models\Order', 'kanban_id');
+    }
 }

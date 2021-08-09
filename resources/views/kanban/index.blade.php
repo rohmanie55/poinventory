@@ -52,7 +52,7 @@ Kanban
                   <td>{{ $kanban->user->name }}</td>
                   <td>{{ $kanban->tujuan }}</td>
                   <td>
-                    <button class="btn btn-sm btn-primary btn-detail" data-toggle="modal" data-target="#modal-detail" data-param="{{ json_encode($kanban->details) }}"><i class="fa fa-eye"></i></button>
+                    <button class="btn btn-sm btn-primary btn-detail" data-toggle="modal" data-target="#modal-detail" data-param="{{ json_encode($kanban->details) }}", data-order="{{ json_encode($kanban->order->pluck('no_order')) }}"><i class="fa fa-eye"></i></button>
                       <a href="{{ route('kanban.edit', $kanban->id) }}" class="btn btn-sm btn-info">
                           <i class="fas fa-edit"></i>
                       </a>
@@ -111,14 +111,22 @@ Kanban
 
         $('.btn-detail').click(function(){
           $("#content-detail").empty()
-          let content = `<tr><td>No</td><td>Nama Barang</td><td>Jumlah</td><td>Status</td></tr>`
+          let content = `<tr>
+          <td>No</td>
+          <td>Nama Barang</td>
+          <td>Jumlah</td>
+          <td>No Order</td>
+          <td>Status</td>
+          </tr>`
           let details = JSON.parse($(this).attr("data-param"))
+          let order   = JSON.parse($(this).attr("data-order"))
 
           details.forEach((data, num)=>{
             content+=`<tr>
             <td>${num+1}</td>
             <td>${data.barang.kd_brg+' - '+data.barang.nm_brg}</td>
             <td>${data.qty_request} ${data.barang.unit}</td>
+            <td>${order}</td>
             <td>${pickStatus(data.status)}</td></tr>`;
           });
 

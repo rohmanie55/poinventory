@@ -21,7 +21,7 @@ class KanbanController extends Controller
     public function index()
     {
         return view('kanban.index', [
-            'kanbans'=> Kanban::with('details.barang:id,kd_brg,nm_brg,unit', 'user:id,name')->get()
+            'kanbans'=> Kanban::with('details.barang:id,kd_brg,nm_brg,unit', 'user:id,name', 'order:id,no_order,kanban_id')->get()
         ]);
     }
 
