@@ -115,7 +115,11 @@ Kanban
           let details = JSON.parse($(this).attr("data-param"))
 
           details.forEach((data, num)=>{
-            content+=`<tr><td>${num+1}</td><td>${data.barang.kd_brg+' - '+data.barang.nm_brg}</td><td>${data.qty_request} ${data.barang.unit}</td><td><span>${data.status}</span></td></tr>`;
+            content+=`<tr>
+            <td>${num+1}</td>
+            <td>${data.barang.kd_brg+' - '+data.barang.nm_brg}</td>
+            <td>${data.qty_request} ${data.barang.unit}</td>
+            <td>${pickStatus(data.status)}</td></tr>`;
           });
 
           $("#content-detail").append(`<table class="table table-striped">${content}</table>`)

@@ -99,15 +99,15 @@
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link {{ in_array(Route::currentRouteName(), ['purchase.index','purchase.create','purchase.edit']) ? 'active' : ''}}" href="{{ route('purchase.index') }}">
-                <i class="ni ni-money-coins text-default"></i>
-                <span class="nav-link-text">Pembelian</span>
-              </a>
-            </li>
-            <li class="nav-item">
               <a class="nav-link {{ in_array(Route::currentRouteName(), ['transaction.index','transaction.create','transaction.edit']) ? 'active' : ''}}" href="{{ route('transaction.index') }}">
                 <i class="ni ni-archive-2 text-info"></i>
                 <span class="nav-link-text">Penerimaan</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link {{ in_array(Route::currentRouteName(), ['purchase.index','purchase.create','purchase.edit']) ? 'active' : ''}}" href="{{ route('purchase.index') }}">
+                <i class="ni ni-money-coins text-default"></i>
+                <span class="nav-link-text">Pembelian</span>
               </a>
             </li>
             <li class="nav-item">
@@ -197,8 +197,8 @@
             <li class="nav-item dropdown">
               <a class="nav-link pr-0" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <div class="media align-items-center">
-                  <span class="avatar avatar-sm rounded-circle">
-                    <img alt="Image placeholder" src="{{ asset('img/theme/team-4.jpg') }}">
+                  <span class="avatar avatar-sm rounded-circle bg-info">
+                    {{ substr(auth()->user()->name, 0, 1) }}
                   </span>
                   <div class="media-body  ml-2  d-none d-lg-block">
                     <span class="mb-0 text-sm  font-weight-bold">{{ auth()->user()->name }}</span>
@@ -306,6 +306,21 @@
       var angkarev = angka.toString().split('').reverse().join('');
       for(var i = 0; i < angkarev.length; i++) if(i%3 == 0) rupiah += angkarev.substr(i,3)+'.';
       return 'Rp. '+rupiah.split('',rupiah.length-1).reverse().join('');
+    }
+
+    function pickStatus(status){
+      let color = "primary"
+
+      if(status=="ordered")
+        color = "info"
+      if(status=="received")
+        color = "success"
+      if(status=="returned")
+        color = "danger"
+      if(status=="complate")
+        color = "default"
+
+      return `<span class="badge badge-${color}">${status}</span>`
     }
 </script>
   @yield('script')

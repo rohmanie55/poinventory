@@ -17,12 +17,12 @@ class CreateTransactionDetailTable extends Migration
             $table->bigIncrements('id');
             $table->unsignedBigInteger('trx_id');
             $table->unsignedBigInteger('barang_id');
-            $table->unsignedBigInteger('kanban_det_id');
+            $table->unsignedBigInteger('order_det_id');
             $table->integer('qty_brg');
             $table->string('note')->nullable();
             $table->foreign('trx_id')->references('id')->on('transactions')->onDelete('cascade');
             $table->foreign('barang_id')->references('id')->on('goods')->onDelete('restrict');
-            $table->foreign('kanban_det_id')->references('id')->on('kanban_details')->onDelete('restrict');
+            $table->foreign('order_det_id')->references('id')->on('order_details')->onDelete('restrict');
             $table->timestamps();
         });
     }

@@ -15,10 +15,13 @@ class CreateTransactionTable extends Migration
     {
         Schema::create('transactions', function (Blueprint $table) {
             $table->bigIncrements('id');
+            $table->string('no_trx', 50);
             $table->date('tgl_trx');
             $table->enum('type', ['received', 'returned']);
+            $table->unsignedBigInteger('order_id');
             $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('restrict');
+            $table->foreign('order_id')->references('id')->on('orders')->onDelete('restrict');
             $table->timestamps();
         });
     }

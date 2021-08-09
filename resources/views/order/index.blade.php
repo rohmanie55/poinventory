@@ -132,11 +132,12 @@ Order
             <td>Barang</td>
             <td>Qty</td>
             <td>Subtotal</td>
+            <td>Status</td>
           </tr>`
 
           let details = JSON.parse($(this).attr("data-param"))
           let request = JSON.parse($(this).attr("data-request"))
-          console.log(request)
+
           details.forEach((data, num)=>{
             content+=`
             <tr>
@@ -147,6 +148,7 @@ Order
               <td>${data.barang.kd_brg+' - '+data.barang.nm_brg}</td>
               <td>${data.qty_order} ${data.barang.unit}</td>
               <td>${convertToRupiah(data.subtotal)}</td>
+              <td>${pickStatus(data.request.status)}</td>
             </tr>`;
           });
 

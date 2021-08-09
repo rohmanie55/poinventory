@@ -43,7 +43,7 @@
                 </div>
                 <div class="form-group @error('suplier_id') has-error has-feedback @enderror">
                     <label>Pilih Supplier</label>
-                    <select name="supplier_id" class="form-control" required>
+                    <select name="supplier_id" class="form-control select2" required>
                         @foreach ($suppliers as $supplier)
                         <option value="{{ $supplier->id }}" {{ $supplier->id==$order->supplier_id ? 'selected' : ''}}>{{ $supplier->kd_supp }} - {{ $supplier->nama }}</option>
                         @endforeach
@@ -55,8 +55,8 @@
                     @enderror
                 </div>
                 <div class="form-group @error('kanban_id') has-error has-feedback @enderror">
-                    <label>Pilih PR</label>
-                    <select id="kanban_id" name="kanban_id" class="form-control" onchange="loadKanban()" required>
+                    <label>Pilih Kanban</label>
+                    <select id="kanban_id" name="kanban_id" class="form-control select2" onchange="loadKanban()" required>
                         @foreach ($kanbans as $kanban)
                         <option value="{{ $kanban->id }}" {{ $kanban->id==$order->kanban_id ? 'selected' : ''}}>
                         {{ $kanban->no_request }} | {{ $kanban->tujuan}} - by {{ $kanban->user->name }}
