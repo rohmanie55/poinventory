@@ -250,11 +250,16 @@ class TransactionController extends Controller
      */
     public function destroy($id)
     {
-        try {
-            $trx = Transaction::findOrFail($id);
+        $trx = Transaction::findOrFail($id);
 
+        try {
             is_null($trx->bukti_in) ?: unlink(storage_path('app/public/trx/sj/').$trx->bukti_sj);
             is_null($trx->bukti_in) ?: unlink(storage_path('app/public/trx/in/').$trx->bukti_in);
+        } catch (\Throwable $th) {
+            //throw $th;
+        }
+
+        try {
 
             $trx->delete();
 
