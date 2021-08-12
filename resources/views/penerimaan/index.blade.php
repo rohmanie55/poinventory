@@ -35,11 +35,11 @@ Transaksi Penerimaan
                 <tr>
                     <td style="width: 5%">#</td>
                     <td style="width: 10%">No Trx</td>
-                    <td style="width: 20%">Tgl Trx</td>
-                    <th style="width: 20%">Type</th>
+                    <td style="width: 10%">Tgl Trx</td>
+                    <th style="width: 10%">Type</th>
                     <th style="width: 20%">User Input</th>
-                    <th style="width: 20%">Surat Jalan</th>
-                    <th style="width: 20%">Invoice</th>
+                    <th style="width: 15%">Surat Jalan</th>
+                    <th style="width: 15%">Invoice</th>
                     <td style="width: 15%">Option</td>
                 </tr>
                 </thead>

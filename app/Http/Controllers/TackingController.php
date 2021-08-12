@@ -3,6 +3,10 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Tackingout;
+use App\Models\TackingoutDetail;
+use App\Models\Goods;
+use DB;
 
 class TackingController extends Controller
 {
@@ -13,7 +17,9 @@ class TackingController extends Controller
      */
     public function index()
     {
-        //
+        return view('tackingout.index', [
+            'tackingouts'=> Tackingout::with('details.barang:id,kd_brg,nm_brg,unit', 'user:id,name')->get()
+        ]);
     }
 
     /**
@@ -23,7 +29,15 @@ class TackingController extends Controller
      */
     public function create()
     {
-        //
+        $goods = Goods::selectRaw('id, kd_brg, nm_brg, harga, unit, ((stock + IFNULL(qty_receive,0)) - (IFNULL(qty_to, 0) + IFNULL(qty_return, 0))) qty_sisa')
+                ->leftjoin(DB::raw('(select SUM(qty_brg) as qty_to, barang_id from tackingout_details GROUP BY barang_id) tackingout'), 'goods.id', '=', 'tackingout.barang_id')
+                ->leftjoin(DB::raw('(select SUM(qty_brg) as qty_return, barang_id from transaction_details INNER JOIN transactions on transactions.id=transaction_details.trx_id where transactions.type="returned" GROUP BY barang_id) trx_return'), 'goods.id', '=', 'trx_return.barang_id')
+                ->leftjoin(DB::raw('(select SUM(qty_brg) as qty_receive, barang_id from transaction_details INNER JOIN transactions on transactions.id=transaction_details.trx_id where transactions.type="received" GROUP BY barang_id) trx_receive'), 'goods.id', '=', 'trx_receive.barang_id')
+                ->get();
+
+        return view('tackingout.create', [
+            'goods'=>$goods
+        ]);
     }
 
     /**
@@ -34,7 +48,35 @@ class TackingController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'tgl_tacking'=> 'required',
+            'receiveby'  => 'required',
+        ]);
+
+        DB::transaction(function () use ($request){
+            $last = Tackingout::selectRaw('MAX(no_tacking) as number')->first();
+            $no_tacking= "P".sprintf("%05s", substr($last->number, 1, 5)+1);
+            $details = [];
+
+            $to = Tackingout::create([
+                'no_tacking' => $no_tacking,
+                'tgl_tacking'=> $request->tgl_tacking,
+                'lokasi'     => $request->lokasi,
+                'tujuan'     => $request->tujuan,
+                'receiveby'  => $request->receiveby,
+                'user_id'    => auth()->user()->id,
+            ]);
+
+            foreach($request->barang_id as $idx=>$barang_id){
+                $details[] = ['barang_id'=>$barang_id, 'qty_brg'=> $request->qty_brg[$idx], 'tacking_id'=>$to->id];
+            }
+
+            TackingoutDetail::insert($details);
+        });
+
+
+
+        return redirect()->route('tackingout.index')->with('message', 'Successfull creating tackingout!');
     }
 
     /**
@@ -56,7 +98,16 @@ class TackingController extends Controller
      */
     public function edit($id)
     {
-        //
+        $goods = Goods::selectRaw('id, kd_brg, nm_brg, harga, unit, ((stock + IFNULL(qty_receive,0)) - (IFNULL(qty_to, 0) + IFNULL(qty_return, 0))) qty_sisa')
+            ->leftjoin(DB::raw('(select SUM(qty_brg) as qty_to, barang_id from tackingout_details GROUP BY barang_id) tackingout'), 'goods.id', '=', 'tackingout.barang_id')
+            ->leftjoin(DB::raw('(select SUM(qty_brg) as qty_return, barang_id from transaction_details INNER JOIN transactions on transactions.id=transaction_details.trx_id where transactions.type="returned" GROUP BY barang_id) trx_return'), 'goods.id', '=', 'trx_return.barang_id')
+            ->leftjoin(DB::raw('(select SUM(qty_brg) as qty_receive, barang_id from transaction_details INNER JOIN transactions on transactions.id=transaction_details.trx_id where transactions.type="received" GROUP BY barang_id) trx_receive'), 'goods.id', '=', 'trx_receive.barang_id')
+            ->get();
+
+        return view('tackingout.edit', [
+            'tackingout'=> Tackingout::with('details')->first(),
+            'goods'=>$goods
+        ]);
     }
 
     /**
@@ -68,7 +119,36 @@ class TackingController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $request->validate([
+            'tgl_tacking'=> 'required',
+            'receiveby'  => 'required',
+        ]);
+
+        DB::transaction(function () use ($request, $id){
+            $details = [];
+
+            $to = Tackingout::find($id)->update([
+                'tgl_tacking'=> $request->tgl_tacking,
+                'lokasi'     => $request->lokasi,
+                'tujuan'     => $request->tujuan,
+                'receiveby'  => $request->receiveby,
+            ]);
+
+            if(!empty($request->barang_id)){
+
+                TackingoutDetail::where('tacking_id', $id)->delete();
+
+                foreach($request->barang_id as $idx=>$barang_id){
+                    $details[] = ['barang_id'=>$barang_id, 'qty_brg'=> $request->qty_brg[$idx], 'tacking_id'=>$id];
+                }
+
+                TackingoutDetail::insert($details);
+            }
+        });
+
+
+
+        return redirect()->route('tackingout.index')->with('message', 'Successfull creating tackingout!');
     }
 
     /**
@@ -79,6 +159,14 @@ class TackingController extends Controller
      */
     public function destroy($id)
     {
-        //
+        try {
+            Tackingout::findOrFail($id)->delete();
+
+            TackingoutDetail::where('tacking_id', $id)->delete();
+
+            return redirect()->route('tackingout.index')->with('success', 'Successfull deleting pengiriman !');
+       } catch (\Throwable $th) {
+            return redirect()->route('tackingout.index')->with('fail', 'Failed deleteing pengiriman!');
+       }
     }
 }

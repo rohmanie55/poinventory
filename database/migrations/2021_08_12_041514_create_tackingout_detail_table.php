@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreatePembelianDetailTable extends Migration
+class CreateTackingoutDetailTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,16 +13,12 @@ class CreatePembelianDetailTable extends Migration
      */
     public function up()
     {
-        Schema::create('pembelian_details', function (Blueprint $table) {
+        Schema::create('tackingout_details', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->unsignedBigInteger('beli_id');
+            $table->unsignedBigInteger('tacking_id');
             $table->unsignedBigInteger('barang_id');
-            $table->unsignedBigInteger('order_det_id');
             $table->integer('qty_brg');
-            $table->double('subtotal');
-            $table->foreign('beli_id')->references('id')->on('pembelians')->onDelete('cascade');
             $table->foreign('barang_id')->references('id')->on('goods')->onDelete('restrict');
-            $table->foreign('order_det_id')->references('id')->on('order_details')->onDelete('restrict');
             $table->timestamps();
         });
     }
@@ -34,6 +30,6 @@ class CreatePembelianDetailTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('pembelian_details');
+        Schema::dropIfExists('tackingout_details');
     }
 }
