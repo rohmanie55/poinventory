@@ -40,7 +40,7 @@ Route::group(['middleware' => 'auth'], function()
     Route::resource('user', 'UserController');
     Route::resource('kanban', 'KanbanController');
     Route::resource('order', 'OrderController');
-    Route::resource('purchase', 'PurchaseController');
+    Route::resource('tackingout', 'TackingController');
     Route::resource('transaction', 'TransactionController');
 
 });

@@ -217,28 +217,30 @@ class OrderController extends Controller
             ]);
 
             //update kanban status and remove old data
-            $order_detail =OrderDetail::where('order_id', $id);
-            $old_order    =$order_detail->get()->pluck('kanban_det_id');
-            KanbanDetail::whereIn('id', $old_order)->update(['status'=>'requested']);
-            $order_detail->delete();
+            if(!empty($request->barang_id)){
+                $order_detail =OrderDetail::where('order_id', $id);
+                $old_order    =$order_detail->get()->pluck('kanban_det_id');
+                KanbanDetail::whereIn('id', $old_order)->update(['status'=>'requested']);
+                $order_detail->delete();
 
-            foreach($request->barang_id as $idx=>$barang_id){
-                if($request->qty_order[$idx]>0){
-                    $details[] = [
-                        'order_id' =>$id,
-                        'barang_id'=>$barang_id,
-                        'kanban_det_id'=>$request->detail_id[$idx],
-                        'qty_order'=>$request->qty_order[$idx],
-                        'subtotal' =>$request->subtotal[$idx]
-                    ];
+                foreach($request->barang_id as $idx=>$barang_id){
+                    if($request->qty_order[$idx]>0){
+                        $details[] = [
+                            'order_id' =>$id,
+                            'barang_id'=>$barang_id,
+                            'kanban_det_id'=>$request->detail_id[$idx],
+                            'qty_order'=>$request->qty_order[$idx],
+                            'subtotal' =>$request->subtotal[$idx]
+                        ];
 
-                    $detail_id[] = $request->detail_id[$idx];
+                        $detail_id[] = $request->detail_id[$idx];
+                    }
                 }
+
+                OrderDetail::insert($details);
+
+                KanbanDetail::whereIn('id', $detail_id)->update(['status'=>'ordered']);
             }
-
-            OrderDetail::insert($details);
-
-            KanbanDetail::whereIn('id', $detail_id)->update(['status'=>'ordered']);
         });
 
         return redirect()->route('order.index')->with('message', 'Successfull updating order!');

@@ -94,10 +94,10 @@
         const kanbans= {!! json_encode($kanbans->toArray(), JSON_HEX_TAG) !!}
 
         loadKanban = ()=>{
-            const req_id  = $("#kanban_id").val() || requests[0].id
+            const req_id  = $("#kanban_id").val() || kanbans[0].id
 
             const kanban = kanbans.find(req=>req.id==req_id)
-            console.log(kanban)
+
             $('#barang_field').empty();
             kanban.detaile.forEach((detail, idx) => addField(detail, idx));
 

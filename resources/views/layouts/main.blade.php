@@ -105,9 +105,9 @@
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link {{ in_array(Route::currentRouteName(), ['purchase.index','purchase.create','purchase.edit']) ? 'active' : ''}}" href="{{ route('purchase.index') }}">
-                <i class="ni ni-money-coins text-default"></i>
-                <span class="nav-link-text">Pembelian</span>
+              <a class="nav-link {{ in_array(Route::currentRouteName(), ['tackingout.index','tackingout.create','tackingout.edit']) ? 'active' : ''}}" href="{{ route('tackingout.index') }}">
+                <i class="ni ni-folder-17 text-default"></i>
+                <span class="nav-link-text">Pengiriman</span>
               </a>
             </li>
             <li class="nav-item">

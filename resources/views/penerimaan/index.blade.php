@@ -1,23 +1,23 @@
 @extends('layouts.main')
 
 @section('title')
-Master User
+Transaksi Penerimaan
 @endsection
 
 @section('header')
  <div class="header-body">
     <div class="row align-items-center py-4">
       <div class="col-lg-6 col-7">
-        <h6 class="h2 text-white d-inline-block mb-0">Master User</h6>
+        <h6 class="h2 text-white d-inline-block mb-0">Transaksi Penerimaan</h6>
         <nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
           <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
-            <li class="breadcrumb-item text-white"><i class="fas fa-user"></i></li>
-            <li class="breadcrumb-item"><a href="{{ route('user.index') }}">User</a></li>
+            <li class="breadcrumb-item text-white"><i class="fas fa-archive"></i></li>
+            <li class="breadcrumb-item"><a href="{{ route('transaction.index') }}">Penerimaan</a></li>
           </ol>
         </nav>
       </div>
       <div class="col-lg-6 col-5 text-right">
-        <a href="{{ route('user.create') }}" class="btn btn-sm btn-neutral"><i class="fas fa-plus"></i> Tambah</a>
+        <a href="{{ route('transaction.create') }}" class="btn btn-sm btn-neutral"><i class="fas fa-plus"></i> Tambah</a>
       </div>
     </div>
   </div>
@@ -34,27 +34,35 @@ Master User
                 <thead>
                 <tr>
                     <td style="width: 5%">#</td>
-                    <td style="width: 20%">Nama</td>
-                    <td style="width: 20%">Username</td>
-                    <th style="width: 20%">Email</th>
-                    <td >Role</td>
-                    <td>Option</td>
+                    <td style="width: 10%">No Trx</td>
+                    <td style="width: 20%">Tgl Trx</td>
+                    <th style="width: 20%">Type</th>
+                    <th style="width: 20%">User Input</th>
+                    <th style="width: 20%">Surat Jalan</th>
+                    <th style="width: 20%">Invoice</th>
+                    <td style="width: 15%">Option</td>
                 </tr>
                 </thead>
                 <tbody>
-                @foreach ($users as $idx=>$user)
+                @foreach ($transactions as $idx=>$transaction)
                 <tr>
                     <td>{{ $idx+1 }}</td>
-                    <td>{{ $user->name }}</td>
-                    <td>{{ $user->username }}</td>
-                    <td>{{ $user->email }}</td>
-                    <td>{{ $user->role }}</td>
+                    <td>{{ $transaction->no_trx }}</td>
+                    <td>{{ $transaction->tgl_trx }}</td>
+                    <td>{{ $transaction->type }}</td>
+                    <td>{{ $transaction->user->name }}</td>
                     <td>
-                        <a href="{{ route('user.edit', ['user'=>$user->id]) }}" class="btn btn-sm btn-info">
+                      <a href="{{ asset("storage/trx/sj/$transaction->bukti_sj") }}" target="_blank">{{ $transaction->bukti_sj }}</a>
+                    </td>
+                    <td>
+                       <a href="{{ asset("storage/trx/in/$transaction->bukti_in") }}" target="_blank">{{ $transaction->bukti_in }}</a>
+                     </td>
+                    <td>
+                        <a href="{{ route('transaction.edit', $transaction->id) }}" class="btn btn-sm btn-info">
                             <i class="fas fa-edit"></i>
                         </a>
                         <form 
-                        action="{{ route('user.destroy', ['user'=>$user->id]) }}" 
+                        action="{{ route('transaction.destroy', $transaction->id) }}" 
                         method="POST"
                         style="display: inline"
                         onsubmit="return confirm('Are you sure to delete this data?')">
