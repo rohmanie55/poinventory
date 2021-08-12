@@ -40,10 +40,10 @@ class OrderController extends Controller
         }
 
         $kanbans = Kanban::with(['user:id,name', 'details'=> function ($query) {
-            $query->selectRaw('kanban_details.id,kanban_id,kanban_details.barang_id,qty_request, qty_request - COALESCE(SUM(qty_order), 0) - COALESCE((select SUM(qty_brg) qty_trx FROM transaction_details INNER JOIN transactions on transactions.id=transaction_details.trx_id WHERE transactions.type="returned" GROUP BY order_det_id) ,0) as qty_sisa, goods.id b_id, kd_brg, nm_brg,harga')
+            $query->selectRaw("kanban_details.id,kanban_id,kanban_details.barang_id,qty_request, qty_request - COALESCE(SUM(qty_order), 0) - COALESCE((select SUM(qty_brg) qty_trx FROM transaction_details INNER JOIN transactions on transactions.id=transaction_details.trx_id WHERE transactions.type='returned' GROUP BY order_det_id) ,0) as qty_sisa, goods.id b_id, kd_brg, nm_brg,harga')
             ->leftJoin('order_details', 'kanban_details.id', '=', 'order_details.kanban_det_id')
             ->leftJoin('goods', 'goods.id', '=', 'kanban_details.barang_id')
-            ->groupBy('kanban_details.id');
+            ->groupBy('kanban_details.id");
         }])->get()->transform(function ($item, $key) {
             $item->detaile = $item->details->where('qty_sisa', '>', 0);
             $item->detaile = $item->detaile->count()>0 ? $item->detaile : null;
@@ -177,7 +177,7 @@ class OrderController extends Controller
     public function edit($id)
     {
         $kanbans = Kanban::with(['user:id,name', 'details'=> function ($query) {
-            $query->selectRaw('kanban_details.id,kanban_id,kanban_details.barang_id,qty_request, qty_request - COALESCE(SUM(qty_order), 0) - COALESCE((select SUM(qty_brg) qty_trx FROM transaction_details INNER JOIN transactions on transactions.id=transaction_details.trx_id WHERE transactions.type="returned" GROUP BY order_det_id) ,0) as qty_sisa, goods.id b_id, kd_brg, nm_brg,harga')
+            $query->selectRaw("kanban_details.id,kanban_id,kanban_details.barang_id,qty_request, qty_request - COALESCE(SUM(qty_order), 0) - COALESCE((select SUM(qty_brg) qty_trx FROM transaction_details INNER JOIN transactions on transactions.id=transaction_details.trx_id WHERE transactions.type='returned' GROUP BY order_det_id) ,0) as qty_sisa, goods.id b_id, kd_brg, nm_brg,harga")
             ->leftJoin('order_details', 'kanban_details.id', '=', 'order_details.kanban_det_id')
             ->leftJoin('goods', 'goods.id', '=', 'kanban_details.barang_id')
             ->groupBy('kanban_details.id');
