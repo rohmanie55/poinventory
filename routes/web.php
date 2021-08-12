@@ -33,6 +33,9 @@ Route::group(['middleware' => 'auth'], function()
 
     Route::get('/', 'DashboardController')->name('dashboard');
 
+    Route::get('report/stock', 'ReportController@stock')->name('stock');
+    Route::get('report/stock_print', 'ReportController@stock_print')->name('stock.print');
+
     Route::post('order/{order}/approve', 'OrderController@approve')->name('order.approve');
 
     Route::resource('goods', 'GoodsController');
@@ -42,5 +45,4 @@ Route::group(['middleware' => 'auth'], function()
     Route::resource('order', 'OrderController');
     Route::resource('tackingout', 'TackingController');
     Route::resource('transaction', 'TransactionController');
-
 });

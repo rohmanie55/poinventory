@@ -118,7 +118,7 @@
               <div class="collapse" id="navbar-tables">
                 <ul class="nav nav-sm flex-column">
                   <li class="nav-item">
-                    <a href="" class="nav-link">
+                    <a href="{{ route('stock') }}" class="nav-link">
                       <span class="sidenav-mini-icon"><i class="ni ni-archive-2 text-default"></i></span>
                       <span class="sidenav-normal"> Stock Barang </span>
                     </a>
