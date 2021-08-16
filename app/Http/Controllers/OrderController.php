@@ -23,8 +23,13 @@ class OrderController extends Controller
      */
     public function index()
     {
+        $orders = Order::with(['request:id,no_request,tgl_request,tujuan','supplier', 'approve:id,name', 'details'=>function($query){
+            $query->selectRaw("id, order_id, barang_id, kanban_det_id, qty_order, COALESCE((select SUM(qty_brg) FROM transaction_details INNER JOIN transactions on transactions.id=transaction_details.trx_id WHERE transaction_details.order_det_id=order_details.id AND transactions.type='returned' GROUP BY order_det_id) ,0) qty_return, subtotal")
+                ->with('request:id,status', 'barang:id,kd_brg,nm_brg,unit');
+        }])->get();
+ 
         return view('order.index', [
-            'orders'=> Order::with('details.barang:id,kd_brg,nm_brg,unit', 'request:id,no_request,tgl_request,tujuan','supplier', 'approve:id,name', 'details.request:id,status',)->get()
+            'orders'=> $orders
         ]);
     }
 
@@ -40,11 +45,14 @@ class OrderController extends Controller
         }
 
         $kanbans = Kanban::with(['user:id,name', 'details'=> function ($query) {
-            $query->selectRaw("kanban_details.id,kanban_id,kanban_details.barang_id,qty_request, qty_request - COALESCE(SUM(qty_order), 0) - COALESCE((select SUM(qty_brg) qty_trx FROM transaction_details INNER JOIN transactions on transactions.id=transaction_details.trx_id WHERE transactions.type='returned' GROUP BY order_det_id) ,0) as qty_sisa, goods.id b_id, kd_brg, nm_brg,harga")
-            ->leftJoin('order_details', 'kanban_details.id', '=', 'order_details.kanban_det_id')
+            $query->selectRaw("kanban_details.id,kanban_id,kanban_details.barang_id,qty_request,  (qty_request - COALESCE(SUM(qty_order), 0)) qty_sisa, goods.id b_id, kd_brg, nm_brg,harga")
+            ->leftJoin(
+                DB::raw("(SELECT id, kanban_det_id, (qty_order-COALESCE((select SUM(qty_brg) FROM transaction_details INNER JOIN transactions on transactions.id=transaction_details.trx_id WHERE transaction_details.order_det_id=order_details.id AND transactions.type='returned' GROUP BY order_det_id) ,0)) qty_order FROM order_details) order_details"), 
+                'kanban_details.id', '=', 'order_details.kanban_det_id')
             ->leftJoin('goods', 'goods.id', '=', 'kanban_details.barang_id')
             ->groupBy("kanban_details.id");
-        }])->get()->transform(function ($item, $key) {
+        }])->get()
+        ->transform(function ($item, $key) {
             $item->detaile = $item->details->where('qty_sisa', '>', 0);
             $item->detaile = $item->detaile->count()>0 ? $item->detaile : null;
             unset($item->details);
@@ -177,8 +185,10 @@ class OrderController extends Controller
     public function edit($id)
     {
         $kanbans = Kanban::with(['user:id,name', 'details'=> function ($query) {
-            $query->selectRaw("kanban_details.id,kanban_id,kanban_details.barang_id,qty_request, qty_request - COALESCE(SUM(qty_order), 0) - COALESCE((select SUM(qty_brg) qty_trx FROM transaction_details INNER JOIN transactions on transactions.id=transaction_details.trx_id WHERE transactions.type='returned' GROUP BY order_det_id) ,0) as qty_sisa, goods.id b_id, kd_brg, nm_brg,harga")
-            ->leftJoin('order_details', 'kanban_details.id', '=', 'order_details.kanban_det_id')
+            $query->selectRaw("kanban_details.id,kanban_id,kanban_details.barang_id,qty_request,  (qty_request - COALESCE(SUM(qty_order), 0)) qty_sisa, goods.id b_id, kd_brg, nm_brg,harga")
+            ->leftJoin(
+                DB::raw("(SELECT id, kanban_det_id, (qty_order-COALESCE((select SUM(qty_brg) FROM transaction_details INNER JOIN transactions on transactions.id=transaction_details.trx_id WHERE transaction_details.order_det_id=order_details.id AND transactions.type='returned' GROUP BY order_det_id) ,0)) qty_order FROM order_details) order_details"), 
+                'kanban_details.id', '=', 'order_details.kanban_det_id')
             ->leftJoin('goods', 'goods.id', '=', 'kanban_details.barang_id')
             ->groupBy('kanban_details.id');
         }])->get()->transform(function ($item, $key) {
@@ -255,7 +265,11 @@ class OrderController extends Controller
     public function destroy($id)
     {
         try {
-            Order::findOrFail($id)->delete();
+            $order = Order::with('details:id,order_id,kanban_det_id')->findOrFail($id);
+
+            KanbanDetail::whereIn('id', $order->details->pluck('kanban_det_id')->toArray())->update(['status'=>'requested']);
+
+            $order->delete();
 
             OrderDetail::where('order_id', $id)->delete();
 

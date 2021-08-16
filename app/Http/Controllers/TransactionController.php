@@ -39,7 +39,7 @@ class TransactionController extends Controller
             ->leftJoin('transaction_details', 'order_details.id', '=', 'transaction_details.order_det_id')
             ->leftJoin('goods', 'goods.id', '=', 'order_details.barang_id')
             ->groupBy('order_details.id');
-        }, 'supplier:id,nama'])->get()->transform(function ($item, $key) {
+        }, 'supplier:id,nama'])->whereNotNull('approve_id')->get()->transform(function ($item, $key) {
             $item->detaile = $item->details->where('qty_sisa', '>', 0);
             $item->detaile = $item->detaile->count()>0 ? $item->detaile : null;
             unset($item->details);
@@ -144,8 +144,10 @@ class TransactionController extends Controller
     public function edit($id)
     {
         $orders = Order::with(['details'=> function ($query) {
-            $query->selectRaw('order_details.id,order_id,order_details.barang_id,qty_order, qty_order - COALESCE(SUM(qty_brg), 0) as qty_sisa, goods.id b_id, kd_brg, nm_brg, kanban_det_id')
-            ->leftJoin('transaction_details', 'order_details.id', '=', 'transaction_details.order_det_id')
+            $query->selectRaw('order_details.id,order_id,order_details.barang_id,qty_order, (qty_order - COALESCE(SUM(qty_brg), 0)) as qty_sisa, goods.id b_id, kd_brg, nm_brg, kanban_det_id')
+            ->leftJoin(
+            DB::raw("(select transaction_details.id, order_det_id, qty_brg from transaction_details inner join transactions on transaction_details.trx_id=transactions.id where type='received') transaction_details")
+            , 'order_details.id', '=', 'transaction_details.order_det_id')
             ->leftJoin('goods', 'goods.id', '=', 'order_details.barang_id')
             ->groupBy('order_details.id');
         }, 'supplier:id,nama'])->get()->transform(function ($item, $key) {
@@ -204,12 +206,8 @@ class TransactionController extends Controller
         DB::transaction(function () use ($request, $id, $trx){
 
             $details = [];
-
-            if($request->sj)
-                $trx->bukti_sj  = $request->sj;
-            if($request->in)
-                $trx->bukti_in  = $request->in;
-
+            $trx->bukti_sj  = $request->sj ? $request->sj : $trx->bukti_sj;
+            $trx->bukti_in  = $request->in ? $request->in : $trx->bukti_in;
             $trx->tgl_trx   = $request->tgl_trx;
             $trx->type      = $request->type;
             $trx->order_id  = $request->order_id;

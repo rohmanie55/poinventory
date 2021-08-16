@@ -8,6 +8,10 @@ class Order extends Model
 {
     protected $guarded = [];
 
+    protected $cast = [
+        'approve_at' => 'datetime',
+    ];
+
     public function approve()
     {
         return $this->hasOne('App\User', 'id','approve_id');

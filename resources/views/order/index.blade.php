@@ -50,7 +50,11 @@ Order
                       <td>{{ $order->tgl_order }}</td>
                       <td>{{ $order->supplier->kd_supp ?? "" }} - {{ $order->supplier->nama }}</td>
                       <td>@currency($order->total)</td>
-                      <td>{{ $order->approve->name ?? '' }} {{ $order->approve_at }}</td>
+                      <td>
+                        <div class="text-center">{{ $order->approve->name ?? '' }}</div>
+                        <span class="badge badge-info">
+                          {{ $order->approve_at ? \Carbon\Carbon::parse($order->approve_at)->diffForHumans() : '' }}</span>
+                      </td>
                       <td>
                         <button class="btn btn-sm btn-primary btn-detail" data-toggle="modal" data-target="#modal-detail" data-param="{{ json_encode($order->details) }}" data-request="{{ json_encode($order->request) }}"><i class="fa fa-eye"></i></button>
                         <a href="{{ route('order.edit', ['order'=>$order->id]) }}" class="btn btn-sm btn-info">
@@ -131,6 +135,7 @@ Order
             <td>Tujuan</td>
             <td>Barang</td>
             <td>Qty</td>
+            <td>Returned</td>
             <td>Subtotal</td>
             <td>Status</td>
           </tr>`
@@ -147,6 +152,7 @@ Order
               <td>${request.tujuan}</td>
               <td>${data.barang.kd_brg+' - '+data.barang.nm_brg}</td>
               <td>${data.qty_order} ${data.barang.unit}</td>
+              <td>${data.qty_return} ${data.barang.unit}</td>
               <td>${convertToRupiah(data.subtotal)}</td>
               <td>${pickStatus(data.request.status)}</td>
             </tr>`;

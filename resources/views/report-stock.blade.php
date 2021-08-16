@@ -39,7 +39,6 @@ Laporan Stock Barang
                   <td style="width: 15%">Harga</td>
                   <td style="width: 10%">Stok Awal</td>
                   <td style="width: 10%">Stock In</td>
-                  <td style="width: 10%">Stock Return</td>
                   <td style="width: 10%">Stock Out</td>
                   <td style="width: 10%">Stok akhir</td>
                   <td style="width: 20%">Satuan</td>
@@ -54,9 +53,8 @@ Laporan Stock Barang
                   <td>@currency($good->harga)</td>
                   <td>{{ $good->stock }}</td>
                   <td>{{ $good->receive }}</td>
-                  <td>{{ $good->returned }}</td>
                   <td>{{ $good->tacking }}</td>
-                  <td>{{ ($good->stock+$good->receive)-($good->returned+$good->tacking) }}</td>
+                  <td>{{ ($good->stock+$good->receive)-$good->tacking }}</td>
                   <td>{{ $good->unit }}</td>
                 </tr>
                 @endforeach
