@@ -58,6 +58,7 @@ Transaksi Penerimaan
                        <a href="{{ asset("storage/trx/in/$transaction->bukti_in") }}" target="_blank">{{ $transaction->bukti_in }}</a>
                      </td>
                     <td>
+                      <button class="btn btn-sm btn-primary btn-detail" data-toggle="modal" data-target="#modal-detail" data-param="{{ json_encode($transaction->details) }}"><i class="fa fa-eye"></i></button>
                         <a href="{{ route('transaction.edit', $transaction->id) }}" class="btn btn-sm btn-info">
                             <i class="fas fa-edit"></i>
                         </a>
@@ -79,6 +80,25 @@ Transaksi Penerimaan
       </div>
     </div>
   </div>
+
+  <div class="modal fade" id="modal-detail" tabindex="-1" role="dialog" aria-labelledby="modal-detail" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h6 class="modal-title" id="modal-title-default">Detail Penerimaan</h6>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body" id="content-detail">
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default  ml-auto" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+  </div>
 @endsection
 
 @section('script')
@@ -92,6 +112,26 @@ Transaksi Penerimaan
             rightColumns: 1,
             leftColumns: 0
           }
+        });
+
+        $('.btn-detail').click(function(){
+          $("#content-detail").empty()
+          let content = `<tr>
+          <td>No</td>
+          <td>Nama Barang</td>
+          <td>Jumlah</td>
+          </tr>`
+          let details = JSON.parse($(this).attr("data-param"))
+
+          details.forEach((data, num)=>{
+            content+=`<tr>
+            <td>${num+1}</td>
+            <td>${data.barang.kd_brg+' - '+data.barang.nm_brg}</td>
+            <td>${data.qty_brg} ${data.barang.unit}</td>
+            </tr>`;
+          });
+
+          $("#content-detail").append(`<table class="table table-striped">${content}</table>`)
         });
     });
 </script>

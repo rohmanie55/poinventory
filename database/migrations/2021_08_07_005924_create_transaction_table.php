@@ -17,8 +17,8 @@ class CreateTransactionTable extends Migration
             $table->bigIncrements('id');
             $table->string('no_trx', 50);
             $table->date('tgl_trx');
-            $table->string('bukti_sj');
-            $table->string('bukti_in');
+            $table->string('bukti_sj')->nullable();
+            $table->string('bukti_in')->nullable();
             $table->enum('type', ['received', 'returned']);
             $table->unsignedBigInteger('order_id');
             $table->unsignedBigInteger('user_id');
