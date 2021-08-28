@@ -174,7 +174,7 @@
                 </div>
                 <!-- List group -->
                 <div class="list-group list-group-flush">
-                  @foreach (auth()->user()->unreadNotifications as $notif)
+                  @foreach (auth()->user()->unreadNotifications->take(6) as $notif)
                   <a href="{{ array_key_exists('url', $notif->data) ? $notif->data['url'] : "#" }}" class="list-group-item list-group-item-action">
                     <div class="row align-items-center">
                       <div class="col-auto">

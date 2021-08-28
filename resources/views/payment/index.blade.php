@@ -11,7 +11,7 @@ Transaksi Pembayaran
         <h6 class="h2 text-white d-inline-block mb-0">Transaksi Pembayaran</h6>
         <nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
           <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
-            <li class="breadcrumb-item text-white"><i class="fas fa-money"></i></li>
+            <li class="breadcrumb-item text-white"><i class="fas fa-money-bill"></i></li>
             <li class="breadcrumb-item"><a href="{{ route('payment.index') }}">Pembayaran</a></li>
           </ol>
         </nav>
@@ -34,29 +34,23 @@ Transaksi Pembayaran
                 <thead>
                 <tr>
                     <td style="width: 5%">#</td>
-                    <td style="width: 10%">No Trx</td>
-                    <td style="width: 10%">Tgl Trx</td>
-                    <th style="width: 10%">Type</th>
+                    <td style="width: 10%">No Invoice</td>
+                    <td style="width: 10%">No Surat Jalan</td>
+                    <th style="width: 10%">Tgl Trx</th>
                     <th style="width: 20%">User Input</th>
-                    <th style="width: 15%">Surat Jalan</th>
-                    <th style="width: 15%">Invoice</th>
+                    <th style="width: 15%">Total Bayar</th>
                     <td style="width: 15%">Option</td>
                 </tr>
                 </thead>
                 <tbody>
-                @foreach ($transactions as $idx=>$payment)
+                @foreach ($payments as $idx=>$payment)
                 <tr>
                     <td>{{ $idx+1 }}</td>
-                    <td>{{ $payment->no_trx }}</td>
+                    <td>{{ $payment->no_inv }}</td>
+                    <td>{{ $payment->no_sj }}</td>
                     <td>{{ $payment->tgl_trx }}</td>
-                    <td>{{ $payment->type }}</td>
                     <td>{{ $payment->user->name }}</td>
-                    <td>
-                      <a href="{{ asset("storage/trx/sj/$payment->bukti_sj") }}" target="_blank">{{ $payment->bukti_sj }}</a>
-                    </td>
-                    <td>
-                       <a href="{{ asset("storage/trx/in/$payment->bukti_in") }}" target="_blank">{{ $payment->bukti_in }}</a>
-                     </td>
+                    <td>@currency($payment->details->sum('subtotal'))</td>
                     <td>
                       <button class="btn btn-sm btn-primary btn-detail" data-toggle="modal" data-target="#modal-detail" data-param="{{ json_encode($payment->details) }}"><i class="fa fa-eye"></i></button>
                         <a href="{{ route('payment.edit', $payment->id) }}" class="btn btn-sm btn-info">
@@ -120,6 +114,7 @@ Transaksi Pembayaran
           <td>No</td>
           <td>Nama Barang</td>
           <td>Jumlah</td>
+          <td>Subtotal</td>
           </tr>`
           let details = JSON.parse($(this).attr("data-param"))
 
@@ -128,6 +123,7 @@ Transaksi Pembayaran
             <td>${num+1}</td>
             <td>${data.barang.kd_brg+' - '+data.barang.nm_brg}</td>
             <td>${data.qty_brg} ${data.barang.unit}</td>
+            <td>${convertToRupiah(data.subtotal)}</td>
             </tr>`;
           });
 

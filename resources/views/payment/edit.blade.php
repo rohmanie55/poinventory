@@ -1,16 +1,16 @@
 @extends('layouts.main')
-@section('title') Tambah Penerimaan @endsection
+@section('title') Edit Pembayaran @endsection
 
 @section('header')
  <div class="header-body">
     <div class="row align-items-center py-4">
       <div class="col-lg-6 col-7">
-        <h6 class="h2 text-white d-inline-block mb-0">Penerimaan</h6>
+        <h6 class="h2 text-white d-inline-block mb-0">Pembayaran</h6>
         <nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
           <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
             <li class="breadcrumb-item text-white"><i class="fas fa-archive"></i></li>
-            <li class="breadcrumb-item"><a href="{{ route('transaction.index') }}">Penerimaan</a></li>
-            <li class="breadcrumb-item"><a href="#">Edit</a></li>
+            <li class="breadcrumb-item"><a href="{{ route('payment.index') }}">Pembayaran</a></li>
+            <li class="breadcrumb-item"><a href="#">Tambah</a></li>
           </ol>
         </nav>
       </div>
@@ -23,82 +23,88 @@
 
 @section('content')
 <div class="row justify-content-center">
-    <div class="col-12 col-lg-8  card ">
+    <div class="col-12 col-lg-8 card ">
         <div class="card-header">
-            <h4 class="card-title">Edit Penerimaan</h4>
+            <h4 class="card-title">Edit Pembayaran</h4>
         </div>
-        <form action="{{ route('transaction.update', $transaction->id) }}" enctype="multipart/form-data" method="POST">
-            @method('PUT')
+        <form action="{{ route('payment.update', $payment->id) }}" enctype="multipart/form-data" method="POST">
             @csrf
+            @method('PUT')
         <div class="card-body p-4 row justify-content-center bg-secondary">
             <div class="col-12">
-                <div class="form-group @error('tgl_trx') has-error has-feedback @enderror">
-                    <label>Tgl Transaksi</label>
-                    <input name="tgl_trx" value="{{ old('tgl_trx') ?? $transaction->tgl_trx }}" type="date" class="form-control form-control-alternative">
-                    @error('tgl_trx') 
-                    <small class="form-text text-danger">
-                        <strong>{{ $message }}</strong>
-                    </small> 
-                    @enderror
-                </div>
-    
-                <div class="form-group @error('bukti_sj') has-error has-feedback @enderror">
-                    <label>Surat Jalan</label>
-                    <input name="bukti_sj" value="{{ old('bukti_sj') }}" type="file" class="form-control form-control-alternative">
-                    @error('bukti_sj') 
-                    <small class="form-text text-danger">
-                        <strong>{{ $message }}</strong>
-                    </small> 
-                    @enderror
-                </div>
-    
-                <div class="form-group @error('bukti_in') has-error has-feedback @enderror">
-                    <label>Surat Invoice</label>
-                    <input name="bukti_in" value="{{ old('bukti_in') }}" type="file" class="form-control form-control-alternative">
-                    @error('bukti_in') 
-                    <small class="form-text text-danger">
-                        <strong>{{ $message }}</strong>
-                    </small> 
-                    @enderror
-                </div>
-    
-                <div class="form-group @error('type') has-error has-feedback @enderror">
-                    <label>Jenis Transaksi</label>
-                    <select name="type" class="form-control form-control-alternative">
-                        <option value="received" {{ old('type')?? $transaction->type=='received' ? 'selected' : ''}}>Diterima</option>
-                        <option value="returned" {{ old('type')?? $transaction->type=='returned' ? 'selected' : ''}}>Diretur</option>
-                    </select>
-                    @error('type') 
-                    <small class="form-text text-danger">
-                        <strong>{{ $message }}</strong>
-                    </small> 
-                    @enderror
-                </div>
-    
-                <div class="form-group @error('order_id') has-error has-feedback @enderror">
-                    <label>Pilih Order</label>
-                    <select name="order_id" id="order_id" class="form-control select2" onchange="loadOrder()">
-                        @foreach ($orders as $order)
-                            <option value="{{ $order->id }}" {{ old('order_id')?? $transaction->order_id==$order->id ? 'selected' : ''}}>{{ $order->no_order }} | {{ $order->supplier->nama }}</option>
-                        @endforeach
-                    </select>
-                    @error('order_id') 
-                    <small class="form-text text-danger">
-                        <strong>{{ $message }}</strong>
-                    </small> 
-                    @enderror
-                </div>
+            <div class="form-group @error('tgl_trx') has-error has-feedback @enderror">
+                <label>Tgl Transaksi</label>
+                <input name="tgl_trx" value="{{ old('tgl_trx') ?? $payment->tgl_trx }}" type="date" class="form-control form-control-alternative">
+                @error('tgl_trx') 
+                <small class="form-text text-danger">
+                    <strong>{{ $message }}</strong>
+                </small> 
+                @enderror
             </div>
-            <div class="col-12 row pt-4" id="barang_field">
 
+            <div class="form-group @error('no_sj') has-error has-feedback @enderror">
+                <label>No Surat Jalan</label>
+                <input name="no_sj" value="{{ old('no_sj') ?? $payment->no_sj }}" type="text" class="form-control form-control-alternative">
+                @error('no_sj') 
+                <small class="form-text text-danger">
+                    <strong>{{ $message }}</strong>
+                </small> 
+                @enderror
+            </div>
+
+            <div class="form-group @error('no_inv') has-error has-feedback @enderror">
+                <label>No Invoice</label>
+                <input name="no_inv" value="{{ old('no_inv') ?? $payment->no_inv }}" type="text" class="form-control form-control-alternative">
+                @error('no_inv') 
+                <small class="form-text text-danger">
+                    <strong>{{ $message }}</strong>
+                </small> 
+                @enderror
+            </div>
+
+
+            <div class="form-group @error('trx_id') has-error has-feedback @enderror">
+                <label>Pilih Order</label>
+                <select name="trx_id" id="trx_id" class="form-control select2" onchange="loadTrx()">
+                    @foreach ($transactions as $trx)
+                        <option value="{{ $trx->id }}">{{ $trx->no_trx }} | {{ $trx->tgl_trx }}</option>
+                    @endforeach
+                </select>
+                @error('trx_id') 
+                <small class="form-text text-danger">
+                    <strong>{{ $message }}</strong>
+                </small> 
+                @enderror
+            </div>
+            </div>
+
+            <div class="col-12 row pt-4" id="barang_field">
+                @foreach ($transactions->where('id', $payment->trx_id)->first()->details as $idx=>$detail)
+                <div class="form-group col-7">
+                    <label>Nama Barang</label>
+                    <input type="hidden" name="detail_id[]" value="{{$detail->id}}">
+                    <input type="hidden" name="barang_id[]" value="{{$detail->b_id}}">
+                    <input type="hidden" name="harga[]" value="{{ $detail->harga}}">
+                    <input name='barang[]' class="form-control" value="{{ $detail->kd_barang}} - {{$detail->nm_brg}} @ @currency($detail->harga)" readonly>
+                </div>
+                <div class="form-group col-2">
+                    <label>Qty</label>
+                    <input name="qty_order[]" onchange="sumTotal({{$idx}})" min="0"  type="number" class="form-control" value="{{ $payment->details->where('detail_id', $detail->id)->first()->qty_order ?? 0 }}" placeholder="Qty" required>
+                </div>
+                <div class="form-group col-3">
+                    <label>Subtotal</label>
+                    <input type="number" class="form-control" readonly name="subtotal[]" value="{{ $payment->details->where('detail_id', $detail->id)->first()->subtotal ?? 0 }}">
+                </div>
+                @endforeach
+                <div class="col-9 text-right total"><b>Total:</b></div><div class="col-3 total"><input name="total" type="number" value="{{ $payment->details->sum('subtotal') }}" class="form-control" readonly></div>
             </div>
         </div>
         <div class="card-footer d-flex justify-content-end">
-            <a class="btn btn-danger mr-2" href="{{ route('transaction.index') }}">
+            <a class="btn btn-danger mr-2" href="{{ route('payment.index') }}">
                 <i class="fas fa-times"></i> Batal
             </a>
             <button class="btn btn-primary">
-                <i class="fas fa-save"></i> Update
+                <i class="fas fa-save"></i> Simpan
             </button>
         </div>
         </form>
@@ -112,15 +118,17 @@
         $('.select2').select2();
     });
 
-    const orders= {!! json_encode($orders->toArray(), JSON_HEX_TAG) !!}
+    const trxs= {!! json_encode($transactions->toArray(), JSON_HEX_TAG) !!}
 
-    loadOrder = ()=>{
-        const req_id  = $("#order_id").val() || orders[0].id
+    loadTrx = ()=>{
+        const req_id  = $("#trx_id").val() || trxs[0].id
 
-        const kanban = orders.find(req=>req.id==req_id)
+        const trx = trxs.find(req=>req.id==req_id)
 
         $('#barang_field').empty();
-        kanban.detaile.forEach((detail, idx) => addField(detail, idx));
+        trx.detaile.forEach((detail, idx) => addField(detail, idx));
+
+        getTotal()
     }
 
     addField = (detail, idx) =>{
@@ -129,21 +137,36 @@
         <label>Nama Barang</label>
         <input type="hidden" name="detail_id[]" value="${detail.id}">
         <input type="hidden" name="barang_id[]" value="${detail.b_id}">
-        <input type="hidden" name="kanban_det_id[]" value="${detail.kanban_det_id}">
+        <input type="hidden" name="harga[]" value="${detail.harga}">
         <input name='barang[]' class="form-control form-control-alternative" value="${detail.kd_brg} - ${detail.nm_brg}" readonly>
     </div>
     <div class="form-group col-2">
         <label>Qty</label>
-        <input name="qty_order[]" required min="0" max="${detail.qty_sisa}" type="number" class="form-control form-control-alternative" value="${detail.qty_sisa}" placeholder="Qty">
+        <input name="qty_brg[]" required min="0" max="${detail.qty_sisa}" onchange="sumTotal(${idx})" type="number" class="form-control form-control-alternative" value="${detail.qty_sisa}" placeholder="Qty">
     </div>
     <div class="form-group col-3">
-        <label>Catatan</label>
-        <input type="text" class="form-control form-control-alternative" name="note[]">
+            <label>Subtotal</label>
+            <input type="number" class="form-control form-control-alternative" readonly name="subtotal[]" value="${detail.qty_sisa*detail.harga}">
     </div>
     `
     $('#barang_field').append(field)
 }
 
-loadOrder();
+   sumTotal=(idx) =>{
+        $("input[name='subtotal[]']")[idx].value =  $("input[name='qty_brg[]']")[idx].value*$("input[name='harga[]']")[idx].value
+        $('.total').remove()
+        getTotal()
+    }
+
+    getTotal = ()=>{
+        let total = 0;
+        for (let index = 0; index < $("input[name='subtotal[]']").length; index++) {
+            const element = $("input[name='subtotal[]']")[index];
+            total += parseFloat(element.value)
+        }
+        $('#barang_field').append(`<div class="col-9 text-right total"><b>Total:</b></div><div class="col-3 total"><input name="total" type="number" value="${total}" class="form-control form-control-alternative" readonly></div>`)
+    }
+
+    loadTrx();
 </script>
 @endsection
