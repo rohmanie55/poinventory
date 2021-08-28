@@ -44,5 +44,6 @@ Route::group(['middleware' => 'auth'], function()
     Route::resource('kanban', 'KanbanController');
     Route::resource('order', 'OrderController');
     Route::resource('tackingout', 'TackingController');
+    Route::resource('payment', 'PaymentController');
     Route::resource('transaction', 'TransactionController');
 });

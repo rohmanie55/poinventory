@@ -44,7 +44,7 @@
       <!-- Brand -->
       <div class="sidenav-header  d-flex  align-items-center">
         <a class="navbar-brand" href="{{ route('dashboard') }}">
-          <img src="{{ asset('img/brand/dark.svg') }}" height="40" class="navbar-brand-img" alt="...">
+           <span style="font-size: 12px;"><i class="ni ni-box-2 text-black"></i> <b>PERSEDIAAN  BARANG</b></span>
         </a>
         <div class=" ml-auto ">
           <!-- Sidenav toggler -->
@@ -104,6 +104,14 @@
                 <span class="nav-link-text">Penerimaan</span>
               </a>
             </li>
+
+            <li class="nav-item">
+              <a class="nav-link {{ in_array(Route::currentRouteName(), ['payment.index','payment.create','payment.edit']) ? 'active' : ''}}" href="{{ route('payment.index') }}">
+                <i class="ni ni-money-coins text-green"></i>
+                <span class="nav-link-text">Pembayaran</span>
+              </a>
+            </li>
+
             <li class="nav-item">
               <a class="nav-link {{ in_array(Route::currentRouteName(), ['tackingout.index','tackingout.create','tackingout.edit']) ? 'active' : ''}}" href="{{ route('tackingout.index') }}">
                 <i class="ni ni-folder-17 text-default"></i>
