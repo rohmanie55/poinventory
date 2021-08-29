@@ -12,12 +12,12 @@ Laporan Stock Barang
         <nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
           <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
             <li class="breadcrumb-item text-white"><i class="fas fa-box"></i></li>
-            <li class="breadcrumb-item"><a href="{{ route('stock') }}">Terbaru</a></li>
+            <li class="breadcrumb-item"><a href="{{ route('report.stock') }}">Terbaru</a></li>
           </ol>
         </nav>
       </div>
       <div class="col-lg-6 col-5 text-right">
-        <a href="{{ route('stock.print') }}" class="btn btn-sm btn-neutral"><i class="fas fa-print"></i> Cetak</a>
+        <a href="{{ route('report.stock', ['print'=>true]) }}" class="btn btn-sm btn-neutral" target="_blank"><i class="fas fa-print"></i> Cetak</a>
       </div>
     </div>
   </div>

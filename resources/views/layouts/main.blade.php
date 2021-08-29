@@ -119,18 +119,49 @@
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="#navbar-tables" data-toggle="collapse" role="button" aria-expanded="false" aria-controls="navbar-tables">
+              <a class="nav-link {{ in_array(Route::currentRouteName(), ['report.stock','report.kanban','report.order','report.transaction','report.payment','report.tacking']) ? 'active' : ''}}" href="#navbar-tables" data-toggle="collapse" role="button" aria-expanded="false" aria-controls="navbar-tables">
                 <i class="ni ni-chart-bar-32 text-danger"></i>
                 <span class="nav-link-text">Laporan</span>
               </a>
               <div class="collapse" id="navbar-tables">
                 <ul class="nav nav-sm flex-column">
                   <li class="nav-item">
-                    <a href="{{ route('stock') }}" class="nav-link">
+                    <a href="{{ route('report.stock') }}" class="nav-link">
                       <span class="sidenav-mini-icon"><i class="ni ni-archive-2 text-default"></i></span>
                       <span class="sidenav-normal"> Stock Barang </span>
                     </a>
                   </li>
+                  <li class="nav-item">
+                    <a href="{{ route('report.kanban') }}" class="nav-link">
+                      <span class="sidenav-mini-icon"><i class="ni ni-archive-2 text-default"></i></span>
+                      <span class="sidenav-normal"> Laporan Kanban </span>
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a href="{{ route('report.order') }}" class="nav-link">
+                      <span class="sidenav-mini-icon"><i class="ni ni-archive-2 text-default"></i></span>
+                      <span class="sidenav-normal"> Laporan Order </span>
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a href="{{ route('report.trx') }}" class="nav-link">
+                      <span class="sidenav-mini-icon"><i class="ni ni-archive-2 text-default"></i></span>
+                      <span class="sidenav-normal"> Laporan Penerimaan </span>
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a href="{{ route('report.payment') }}" class="nav-link">
+                      <span class="sidenav-mini-icon"><i class="ni ni-archive-2 text-default"></i></span>
+                      <span class="sidenav-normal"> Laporan Pembayaran </span>
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a href="{{ route('report.tacking') }}" class="nav-link">
+                      <span class="sidenav-mini-icon"><i class="ni ni-archive-2 text-default"></i></span>
+                      <span class="sidenav-normal"> Laporan Pengiriman </span>
+                    </a>
+                  </li>
+
                 </ul>
               </div>
             </li>

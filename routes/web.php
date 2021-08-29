@@ -33,8 +33,12 @@ Route::group(['middleware' => 'auth'], function()
 
     Route::get('/', 'DashboardController')->name('dashboard');
 
-    Route::get('report/stock', 'ReportController@stock')->name('stock');
-    Route::get('report/stock_print', 'ReportController@stock_print')->name('stock.print');
+    Route::get('report/stock', 'ReportController@stock')->name('report.stock');
+    Route::get('report/kanban', 'ReportController@kanban')->name('report.kanban');
+    Route::get('report/order', 'ReportController@order')->name('report.order');
+    Route::get('report/trx', 'ReportController@trx')->name('report.trx');
+    Route::get('report/payment', 'ReportController@payment')->name('report.payment');
+    Route::get('report/tacking', 'ReportController@tacking')->name('report.tacking');
 
     Route::post('order/{order}/approve', 'OrderController@approve')->name('order.approve');
 
