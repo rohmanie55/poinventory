@@ -74,6 +74,7 @@
                     <option {{ old('role')=='gudang' ? 'selected' : ''}}>gudang</option>
                     <option {{ old('role')=='purchasing' ? 'selected' : ''}}>purchasing</option>
                     <option {{ old('role')=='finance' ? 'selected' : ''}}>finance</option>
+                    <option {{ old('role')=='accounting' ? 'selected' : ''}}>accounting</option>
                     <option {{ old('role')=='manager' ? 'selected' : ''}}>manager</option>
                 </select>
                 @error('role') 

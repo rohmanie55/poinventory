@@ -68,56 +68,71 @@
                 <span class="nav-link-text">Dashboard</span>
               </a>
             </li>
+            @if (in_array(auth()->user()->role, ['purchasing']))
             <li class="nav-item">
                 <a class="nav-link {{ in_array(Route::currentRouteName(), ['user.index','user.create','user.edit']) ? 'active' : ''}}" href="{{ route('user.index') }}">
                   <i class="ni ni-single-02 text-info"></i>
                   <span class="nav-link-text">Master User</span>
                 </a>
             </li>
+            @endif
+            @if (in_array(auth()->user()->role, ['purchasing']))
             <li class="nav-item">
                 <a class="nav-link {{ in_array(Route::currentRouteName(), ['goods.index','goods.create','goods.edit']) ? 'active' : ''}}" href="{{ route('goods.index') }}">
                   <i class="ni ni-box-2 text-orange"></i>
                   <span class="nav-link-text">Master Barang</span>
                 </a>
             </li>
+            @endif
+            @if (in_array(auth()->user()->role, ['purchasing']))
             <li class="nav-item">
                 <a class="nav-link {{ in_array(Route::currentRouteName(), ['supplier.index','supplier.create','supplier.edit']) ? 'active' : ''}}" href="{{ route('supplier.index') }}">
                   <i class="ni ni-delivery-fast text-success"></i>
                   <span class="nav-link-text">Master Supplier</span>
                 </a>
             </li>
+            @endif
+            @if (in_array(auth()->user()->role, ['admin']))
             <li class="nav-item">
               <a class="nav-link {{ in_array(Route::currentRouteName(), ['kanban.index','kanban.create','kanban.edit']) ? 'active' : ''}}" href="{{ route('kanban.index') }}">
                 <i class="ni ni-send text-danger"></i>
                 <span class="nav-link-text">Kanban</span>
               </a>
             </li>
+            @endif
+            @if (in_array(auth()->user()->role, ['purchasing', 'manager']))
             <li class="nav-item">
               <a class="nav-link {{ in_array(Route::currentRouteName(), ['order.index','order.create','order.edit']) ? 'active' : ''}}" href="{{ route('order.index') }}">
                 <i class="ni ni-bag-17 text-blue"></i>
                 <span class="nav-link-text">Order</span>
               </a>
             </li>
+            @endif
+            @if (in_array(auth()->user()->role, ['gudang']))
             <li class="nav-item">
               <a class="nav-link {{ in_array(Route::currentRouteName(), ['transaction.index','transaction.create','transaction.edit']) ? 'active' : ''}}" href="{{ route('transaction.index') }}">
                 <i class="ni ni-archive-2 text-info"></i>
                 <span class="nav-link-text">Penerimaan</span>
               </a>
             </li>
+            @endif
 
+            @if (in_array(auth()->user()->role, ['finance']))
             <li class="nav-item">
               <a class="nav-link {{ in_array(Route::currentRouteName(), ['payment.index','payment.create','payment.edit']) ? 'active' : ''}}" href="{{ route('payment.index') }}">
                 <i class="ni ni-money-coins text-green"></i>
                 <span class="nav-link-text">Pembayaran</span>
               </a>
             </li>
-
+            @endif
+            @if (in_array(auth()->user()->role, ['gudang']))
             <li class="nav-item">
               <a class="nav-link {{ in_array(Route::currentRouteName(), ['tackingout.index','tackingout.create','tackingout.edit']) ? 'active' : ''}}" href="{{ route('tackingout.index') }}">
                 <i class="ni ni-folder-17 text-default"></i>
                 <span class="nav-link-text">Pengiriman</span>
               </a>
             </li>
+            @endif
             <li class="nav-item">
               <a class="nav-link {{ in_array(Route::currentRouteName(), ['report.stock','report.kanban','report.order','report.transaction','report.payment','report.tacking']) ? 'active' : ''}}" href="#navbar-tables" data-toggle="collapse" role="button" aria-expanded="false" aria-controls="navbar-tables">
                 <i class="ni ni-chart-bar-32 text-danger"></i>
@@ -125,42 +140,54 @@
               </a>
               <div class="collapse" id="navbar-tables">
                 <ul class="nav nav-sm flex-column">
+                  @if (in_array(auth()->user()->role, ['gudang', 'manager']))
                   <li class="nav-item">
                     <a href="{{ route('report.stock') }}" class="nav-link">
                       <span class="sidenav-mini-icon"><i class="ni ni-archive-2 text-default"></i></span>
                       <span class="sidenav-normal"> Stock Barang </span>
                     </a>
                   </li>
+                  @endif
+                  @if (in_array(auth()->user()->role, ['accounting', 'admin', 'manager']))
                   <li class="nav-item">
                     <a href="{{ route('report.kanban') }}" class="nav-link">
                       <span class="sidenav-mini-icon"><i class="ni ni-archive-2 text-default"></i></span>
                       <span class="sidenav-normal"> Laporan Kanban </span>
                     </a>
                   </li>
+                  @endif
+                  @if (in_array(auth()->user()->role, ['purchasing', 'accounting', 'manager']))
                   <li class="nav-item">
                     <a href="{{ route('report.order') }}" class="nav-link">
                       <span class="sidenav-mini-icon"><i class="ni ni-archive-2 text-default"></i></span>
                       <span class="sidenav-normal"> Laporan Order </span>
                     </a>
                   </li>
+                  @endif
+                  @if (in_array(auth()->user()->role, ['gudang', 'manager']))
                   <li class="nav-item">
                     <a href="{{ route('report.trx') }}" class="nav-link">
                       <span class="sidenav-mini-icon"><i class="ni ni-archive-2 text-default"></i></span>
                       <span class="sidenav-normal"> Laporan Penerimaan </span>
                     </a>
                   </li>
+                  @endif
+                  @if (in_array(auth()->user()->role, ['finance', 'accounting', 'manager']))
                   <li class="nav-item">
                     <a href="{{ route('report.payment') }}" class="nav-link">
                       <span class="sidenav-mini-icon"><i class="ni ni-archive-2 text-default"></i></span>
                       <span class="sidenav-normal"> Laporan Pembayaran </span>
                     </a>
                   </li>
+                  @endif
+                  @if (in_array(auth()->user()->role, ['gudang', 'admin', 'manager']))
                   <li class="nav-item">
                     <a href="{{ route('report.tacking') }}" class="nav-link">
                       <span class="sidenav-mini-icon"><i class="ni ni-archive-2 text-default"></i></span>
                       <span class="sidenav-normal"> Laporan Pengiriman </span>
                     </a>
                   </li>
+                  @endif
 
                 </ul>
               </div>
