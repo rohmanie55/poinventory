@@ -75,7 +75,7 @@ class TransactionController extends Controller
         if($request->hasFile('bukti_in')){
             $request['in'] = md5(time()).'.'.$request->file('bukti_in')->getClientOriginalExtension();
 
-            $request->file('bukti_sj')->move(storage_path('app/public/trx/in'), $request->in);
+            $request->file('bukti_in')->move(storage_path('app/public/trx/in'), $request->in);
         }
 
         DB::transaction(function () use ($request){
