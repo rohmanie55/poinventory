@@ -20,6 +20,7 @@ class CreatePaymentDetailsTable extends Migration
             $table->unsignedBigInteger('trx_det_id');
             $table->integer('qty_brg');
             $table->string('note')->nullable();
+            $table->double('subtotal');
             $table->foreign('payment_id')->references('id')->on('payments')->onDelete('cascade');
             $table->foreign('barang_id')->references('id')->on('goods')->onDelete('restrict');
             $table->foreign('trx_det_id')->references('id')->on('transaction_details')->onDelete('restrict');

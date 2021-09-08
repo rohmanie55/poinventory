@@ -20,6 +20,7 @@ class CreateTransactionDetailTable extends Migration
             $table->unsignedBigInteger('order_det_id');
             $table->integer('qty_brg');
             $table->double('subtotal');
+            $table->string('note', 255)->nullable();
             $table->foreign('trx_id')->references('id')->on('transactions')->onDelete('cascade');
             $table->foreign('barang_id')->references('id')->on('goods')->onDelete('restrict');
             $table->foreign('order_det_id')->references('id')->on('order_details')->onDelete('restrict');

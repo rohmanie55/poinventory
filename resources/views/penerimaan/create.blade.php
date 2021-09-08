@@ -77,7 +77,7 @@
             <div class="form-group @error('order_id') has-error has-feedback @enderror">
                 <label>Pilih Order</label>
                 <select name="order_id" id="order_id" class="form-control select2" onchange="loadOrder()">
-                    @foreach ($orders as $order)
+                    @foreach ($orders->where('detaile', '<>', null) as $order)
                         <option value="{{ $order->id }}">{{ $order->no_order }} | {{ $order->supplier->nama }}</option>
                     @endforeach
                 </select>

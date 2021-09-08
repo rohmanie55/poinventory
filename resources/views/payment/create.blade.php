@@ -65,7 +65,7 @@
             <div class="form-group @error('trx_id') has-error has-feedback @enderror">
                 <label>Pilih Order</label>
                 <select name="trx_id" id="trx_id" class="form-control select2" onchange="loadTrx()">
-                    @foreach ($transactions as $trx)
+                    @foreach ($transactions->where('detaile', '<>', null) as $trx)
                         <option value="{{ $trx->id }}">{{ $trx->no_trx }} | {{ $trx->tgl_trx }}</option>
                     @endforeach
                 </select>
