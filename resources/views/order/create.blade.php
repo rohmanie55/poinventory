@@ -31,7 +31,15 @@
             @csrf
         <div class="card-body p-4 row justify-content-center bg-secondary">
             <div class="col-12">
-
+                <div class="form-group @error('no_order') has-error has-feedback @enderror">
+                    <label>No Order</label>
+                    <input name="no_order" value="{{ old('no_order') }}" type="text" class="form-control form-control-alternative" placeholder="No Order" required>
+                    @error('no_order') 
+                    <small class="form-text text-danger">
+                        <strong>{{ $message }}</strong>
+                    </small> 
+                    @enderror
+                </div>
                 <div class="form-group @error('tgl_order') has-error has-feedback @enderror">
                     <label>Tgl Order</label>
                     <input name="tgl_order" value="{{ old('tgl_order') }}" type="date" class="form-control form-control-alternative" placeholder="Tgl Order" required>

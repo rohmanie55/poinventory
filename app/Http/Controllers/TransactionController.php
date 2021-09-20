@@ -60,6 +60,7 @@ class TransactionController extends Controller
     public function store(Request $request)
     {
         $request->validate([
+            'no_trx'  => 'required|max:10',
             'tgl_trx'  => 'required',
             'order_id' => 'required',
             'bukti_sj' => 'nullable|mimes:jpg,png,jpeg,pdf',
@@ -79,13 +80,11 @@ class TransactionController extends Controller
         }
 
         DB::transaction(function () use ($request){
-            $last  = Transaction::selectRaw('MAX(no_trx) as number')->first();
-            $no_trx= "R".sprintf("%05s", substr($last->number, 1, 5)+1);
             $requestor = Order::select('id','user_id','kanban_id','no_order')->with('request:id,no_request,user_id')->find($request->order_id);
             $details = [];
 
             $trx = Transaction::create([
-                'no_trx'    => $no_trx,
+                'no_trx'    => $request->no_trx,
                 'tgl_trx'   => $request->tgl_trx,
                 'type'      => $request->type,
                 'order_id'  => $request->order_id,
@@ -173,6 +172,7 @@ class TransactionController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
+            'no_trx'   => 'required|max:10',
             'tgl_trx'  => 'required',
             'order_id' => 'required',
             'bukti_sj' => 'nullable|mimes:jpg,png,jpeg,pdf',
@@ -206,6 +206,7 @@ class TransactionController extends Controller
         DB::transaction(function () use ($request, $id, $trx){
 
             $details = [];
+            $trx->no_trx    = $request->no_trx;
             $trx->bukti_sj  = $request->sj ? $request->sj : $trx->bukti_sj;
             $trx->bukti_in  = $request->in ? $request->in : $trx->bukti_in;
             $trx->tgl_trx   = $request->tgl_trx;

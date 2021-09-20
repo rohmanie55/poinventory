@@ -31,6 +31,15 @@
             @csrf
         <div class="card-body p-4 row justify-content-center bg-secondary">
             <div class="col-12">
+                <div class="form-group @error('no_request') has-error has-feedback @enderror">
+                    <label>No Request</label>
+                    <input name="no_request" value="{{ old('no_request') }}" type="text" class="form-control form-control-alternative" placeholder="No Request" required>
+                    @error('no_request') 
+                    <small class="form-text text-danger">
+                        <strong>{{ $message }}</strong>
+                    </small> 
+                    @enderror
+                </div>
                 <div class="form-group @error('tgl_request') has-error has-feedback @enderror">
                     <label>Tgl Request</label>
                     <input name="tgl_request" value="{{ old('tgl_request') }}" type="date" class="form-control form-control-alternative" placeholder="Tgl Request" required>
@@ -66,6 +75,24 @@
                     <div class="col-3 text-right">
                         <button type="button" onclick="addField()" class="btn btn-sm btn-info pull-right"> <i class="fas fa-plus"></i></button>
                     </div>
+                    @forelse (old('qty_request') ?? [] as $idx=> $qty)
+                    <div class="form-group barang col-8">
+                        <label>Nama Barang</label>
+                        <select name="barang_id[]" class="form-control select2">
+                            @foreach ($goods as $good)
+                            <option value="{{ $good->id }}" {{ $good->id==old('barang_id')[$idx]? 'selected' : ''}}>{{ $good->kd_brg }} - {{ $good->nm_brg }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="form-group qty col-3">
+                        <label>Qty</label>
+                        <input name="qty_request[]" min="0" type="number" class="form-control form-control-alternative" placeholder="Qty" value="{{ $qty }}" required>
+                    </div>
+                    <div class="col-1 action">
+                        <label>&nbsp;</label>
+                        <button type="button" onclick="removeField($key)" class="btn btn-sm btn-danger pull-right mt-3"> <i class="fas fa-trash"></i></button>
+                    </div>
+                    @empty
                     <div class="form-group barang col-8">
                         <label>Nama Barang</label>
                         <select name="barang_id[]" class="form-control select2">
@@ -76,12 +103,13 @@
                     </div>
                     <div class="form-group qty col-3">
                         <label>Qty</label>
-                        <input name="qty_request[]" min="0" value="{{ old('qty_request') }}" type="number" class="form-control form-control-alternative" placeholder="Qty" required>
+                        <input name="qty_request[]" min="0" type="number" class="form-control form-control-alternative" placeholder="Qty" required>
                     </div>
                     <div class="col-1 action">
                         <label>&nbsp;</label>
                         <button type="button" onclick="removeField(0)" class="btn btn-sm btn-danger pull-right mt-3"> <i class="fas fa-trash"></i></button>
                     </div>
+                    @endforelse
             </div>
         </div>
         <div class="card-footer d-flex justify-content-end">

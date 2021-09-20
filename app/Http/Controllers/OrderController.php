@@ -75,21 +75,19 @@ class OrderController extends Controller
     public function store(Request $request)
     {
         $request->validate([
+            'no_order'  => 'required|max:10',
             'tgl_order'  => 'required',
             'supplier_id' => 'required',
             'kanban_id' => 'required'
         ]);
 
         DB::transaction(function () use ($request){
-
-            $last = Order::selectRaw('MAX(no_order) as number')->first();
-            $no_order= "O".sprintf("%05s", substr($last->number, 1, 5)+1);
             $requestor = Kanban::select('id','user_id')->find($request->kanban_id);
             $details = [];
             $detail_id = [];
 
             $po = Order::create([
-                'no_order'  => $no_order,
+                'no_order'  => $request->no_order,
                 'tgl_order' => $request->tgl_order,
                 'total'     => $request->total,
                 'suplier_id'=> $request->supplier_id,
@@ -219,9 +217,11 @@ class OrderController extends Controller
             $details = [];
             $detail_id = [];
 
-            Order::find($id)->update([
+            $order = Order::find($id);
+            $order->update([
+                'no_order' => $request->no_order,
                 'tgl_order'=> $request->tgl_order,
-                'total'    => $request->total,
+                'total'    => empty($request->barang_id) ? $order->total : $request->total,
                 'suplier_id'=> $request->supplier_id,
                 'kanban_id'=> $request->kanban_id,
             ]);

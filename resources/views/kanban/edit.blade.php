@@ -32,6 +32,15 @@
             @csrf
         <div class="card-body p-4 row justify-content-center bg-secondary">
             <div class="col-12">
+                <div class="form-group @error('no_request') has-error has-feedback @enderror">
+                    <label>No Request</label>
+                    <input name="no_request" value="{{ old('no_request') ?? $kanban->no_request }}" type="text" class="form-control form-control-alternative" placeholder="No Request" required>
+                    @error('no_request') 
+                    <small class="form-text text-danger">
+                        <strong>{{ $message }}</strong>
+                    </small> 
+                    @enderror
+                </div>
                 <div class="form-group @error('tgl_request') has-error has-feedback @enderror">
                     <label>Tgl Request</label>
                     <input name="tgl_request" value="{{ old('tgl_request') ?? $kanban->tgl_request }}" type="date" class="form-control form-control-alternative" placeholder="Tgl Request" required>

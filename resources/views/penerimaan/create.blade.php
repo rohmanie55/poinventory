@@ -31,6 +31,15 @@
             @csrf
         <div class="card-body p-4 row justify-content-center bg-secondary">
             <div class="col-12">
+            <div class="form-group @error('no_trx') has-error has-feedback @enderror">
+                <label>No Order</label>
+                <input name="no_trx" value="{{ old('no_trx') }}" type="text" class="form-control form-control-alternative" placeholder="No Order" required>
+                @error('no_trx') 
+                <small class="form-text text-danger">
+                    <strong>{{ $message }}</strong>
+                </small> 
+                @enderror
+            </div>
             <div class="form-group @error('tgl_trx') has-error has-feedback @enderror">
                 <label>Tgl Transaksi</label>
                 <input name="tgl_trx" value="{{ old('tgl_trx') }}" type="date" class="form-control form-control-alternative">

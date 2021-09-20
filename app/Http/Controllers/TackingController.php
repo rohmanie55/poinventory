@@ -48,17 +48,16 @@ class TackingController extends Controller
     public function store(Request $request)
     {
         $request->validate([
+            'no_tacking' =>  'required|max:10',
             'tgl_tacking'=> 'required',
             'receiveby'  => 'required',
         ]);
 
         DB::transaction(function () use ($request){
-            $last = Tackingout::selectRaw('MAX(no_tacking) as number')->first();
-            $no_tacking= "P".sprintf("%05s", substr($last->number, 1, 5)+1);
             $details = [];
 
             $to = Tackingout::create([
-                'no_tacking' => $no_tacking,
+                'no_tacking' => $request->no_tacking,
                 'tgl_tacking'=> $request->tgl_tacking,
                 'lokasi'     => $request->lokasi,
                 'tujuan'     => $request->tujuan,
@@ -103,7 +102,7 @@ class TackingController extends Controller
             ->get();
 
         return view('tackingout.edit', [
-            'tackingout'=> Tackingout::with('details')->first(),
+            'tackingout'=> Tackingout::with('details')->find($id),
             'goods'=>$goods
         ]);
     }
@@ -118,6 +117,7 @@ class TackingController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
+            'no_tacking' =>  'required|max:10',
             'tgl_tacking'=> 'required',
             'receiveby'  => 'required',
         ]);
@@ -126,6 +126,7 @@ class TackingController extends Controller
             $details = [];
 
             $to = Tackingout::find($id)->update([
+                'no_tacking' => $request->no_tacking,
                 'tgl_tacking'=> $request->tgl_tacking,
                 'lokasi'     => $request->lokasi,
                 'tujuan'     => $request->tujuan,

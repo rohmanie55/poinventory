@@ -46,17 +46,16 @@ class KanbanController extends Controller
     public function store(Request $request)
     {
         $request->validate([
+            'no_request'=> 'required|max:10',
             'tgl_request'=> 'required',
             'tgl_butuh'  => 'nullable|after:tgl_request',
         ]);
             
         DB::transaction(function () use ($request){
-            $last = Kanban::selectRaw('MAX(no_request) as number')->first();
-            $no_request= "K".sprintf("%05s", substr($last->number, 1, 5)+1);
             $details = [];
 
             $kanban = Kanban::create([
-                'no_request' => $no_request,
+                'no_request' => $request->no_request,
                 'tgl_request'=> $request->tgl_request,
                 'tgl_butuh'  => $request->tgl_butuh,
                 'tujuan'     => $request->tujuan,
@@ -118,19 +117,21 @@ class KanbanController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
+            'no_request'=> 'required|max:10',
             'tgl_request'=> 'required',
             'tgl_butuh'  => 'nullable|after:tgl_request',
         ]);
 
         DB::transaction(function () use ($request, $id){
             $forms   = collect();
-            $details = KanbanDetail::where('request_id', $id)->get();
+            $details = KanbanDetail::where('kanban_id', $id)->get();
 
             foreach($request->barang_id as $idx=>$barang_id){
-                $forms->push(['id'=>$request->id[$idx] ?? null, 'barang_id'=>$barang_id, 'qty_request'=> $request->qty_request[$idx], 'request_id'=>$id]);
+                $forms->push(['id'=>$request->id[$idx] ?? null, 'barang_id'=>$barang_id, 'qty_request'=> $request->qty_request[$idx], 'kanban_id'=>$id]);
             }
 
             Kanban::find($id)->update([
+                'no_request' => $request->no_request,
                 'tgl_request'=> $request->tgl_request,
                 'tgl_butuh'  => $request->tgl_butuh,
             ]);
@@ -140,7 +141,7 @@ class KanbanController extends Controller
                 if($form){
                     $detail->barang_id  = $form['barang_id'];
                     $detail->qty_request= $form['qty_request'];
-                    $detail->request_id= $form['request_id'];
+                    $detail->kanban_id= $form['kanban_id'];
                     $detail->save();
                 }else{
                     $detail->delete();

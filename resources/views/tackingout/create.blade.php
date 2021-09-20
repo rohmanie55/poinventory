@@ -31,6 +31,15 @@
             @csrf
         <div class="card-body p-4 row justify-content-center bg-secondary">
             <div class="col-12">
+                <div class="form-group @error('no_tacking') has-error has-feedback @enderror">
+                    <label>No Pengiriman</label>
+                    <input name="no_tacking" value="{{ old('no_tacking') }}" type="text" class="form-control form-control-alternative" placeholder="No Pengiriman" required>
+                    @error('no_tacking') 
+                    <small class="form-text text-danger">
+                        <strong>{{ $message }}</strong>
+                    </small> 
+                    @enderror
+                </div>
                 <div class="form-group @error('tgl_tacking') has-error has-feedback @enderror">
                     <label>Tgl Pengiriman</label>
                     <input name="tgl_tacking" value="{{ old('tgl_tacking') }}" type="date" class="form-control form-control-alternative" placeholder="Tgl Pengiriman" required>
